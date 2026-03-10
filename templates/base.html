@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <!-- ===== HEADER SECTION ===== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneSport - Dự đoán bóng đá</title>
+    <!-- CSS Dependencies -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- ===== STYLES SECTION ===== -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            background-color: #e8f0e8;  /* Màu xanh nhạt */
+            cursor: url('/static/cursor/cursor.png'), auto;
+        }
+
+        /* Hiệu ứng background và các vật thể */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, #ff0000, #ffff00) 3% 35% / 25px 50px no-repeat,
+                linear-gradient(45deg, #0000ff, #ffffff) 3% 75% / 25px 50px no-repeat,
+                linear-gradient(45deg, #ff0000, #ffff00) 97% 45% / 25px 50px no-repeat,
+                linear-gradient(45deg, #0000ff, #ffffff) 97% 85% / 25px 50px no-repeat;
+            opacity: 0.35;
+            z-index: -1;
+            pointer-events: none;
+            animation: waveFlags 3s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                url('https://img.icons8.com/emoji/48/000000/soccer-ball-emoji.png') 10% 20% / 48px 48px no-repeat,
+                url('https://img.icons8.com/emoji/48/000000/soccer-ball-emoji.png') 80% 70% / 48px 48px no-repeat,
+                url('https://img.icons8.com/emoji/48/000000/soccer-ball-emoji.png') 20% 40% / 48px 48px no-repeat,
+                url('https://img.icons8.com/emoji/48/000000/soccer-ball-emoji.png') 70% 30% / 48px 48px no-repeat,
+                url('https://img.icons8.com/emoji/48/000000/soccer-ball-emoji.png') 30% 80% / 48px 48px no-repeat,
+                url('https://img.icons8.com/emoji/48/000000/soccer-ball-emoji.png') 60% 60% / 48px 48px no-repeat;
+            opacity: 0.5;
+            z-index: -1;
+            pointer-events: none;
+            animation: spinBall 8s linear infinite;
+        }
+
+        /* Hiệu ứng phát sáng trong darkmode */
+        body.darkmode::before {
+            opacity: 0.7;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+        }
+
+        body.darkmode::after {
+            opacity: 0.8;
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
+        }
+
+        @keyframes waveFlags {
+            0% { filter: blur(0px); }
+            100% { filter: blur(2px); }
+        }
+
+        @keyframes spinBall {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .container {
+            display: block;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 0 0 0;
+        }
+
+        /* Navbar hover và sticky */
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #222;
+            transition: color 0.2s, border-bottom 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+            color: #1e3c72;
+            border-bottom: 2px solid #1e3c72;
+            background: none;
+        }
+        .navbar.sticky-top {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            z-index: 9999 !important;
+        }
+
+        /* Darkmode styles */
+        body.darkmode {
+            background: #181a1b !important;  /* Màu đen cho darkmode */
+            color: #e0e0e0 !important;
+        }
+        body.darkmode .prediction-box,
+        body.darkmode .card,
+        body.darkmode .modal-content {
+            background: #23272b !important;
+            color: #e0e0e0 !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        body.darkmode .navbar,
+        body.darkmode .navbar.bg-white {
+            background: #23272b !important;
+            color: #e0e0e0 !important;
+            border-bottom: 1px solid #333 !important;
+        }
+        body.darkmode .table {
+            background: #23272b !important;
+            color: #e0e0e0 !important;
+        }
+        body.darkmode .table th,
+        body.darkmode .table td {
+            background: #23272b !important;
+            color: #e0e0e0 !important;
+            border-color: #444 !important;
+        }
+        body.darkmode .badge.bg-primary {
+            background: #1e3c72 !important;
+            color: #fff !important;
+        }
+        body.darkmode .badge.bg-warning {
+            background: #f7b731 !important;
+            color: #23272b !important;
+        }
+        body.darkmode .form-control,
+        body.darkmode input,
+        body.darkmode select {
+            background: #23272b !important;
+            color: #e0e0e0 !important;
+            border-color: #444 !important;
+        }
+        body.darkmode .modal-header {
+            background: #181a1b !important;
+            color: #fff !important;
+        }
+        body.darkmode .btn,
+        body.darkmode .btn-primary {
+            background: #1e3c72 !important;
+            color: #fff !important;
+            border: none;
+        }
+        body.darkmode .alert {
+            background: #23272b !important;
+            color: #e0e0e0 !important;
+            border-color: #444 !important;
+        }
+        body.darkmode .navbar-nav .nav-link {
+            color: #e0e0e0 !important;
+        }
+        body.darkmode .navbar-nav .nav-link.active {
+            color: #f7b731 !important;
+            border-bottom: 2px solid #f7b731 !important;
+        }
+        .nav-link.active {
+            color: #111 !important;
+            font-weight: bold;
+            border-bottom: 2px solid #1e3c72;
+        }
+        .nav-link i { margin-right: 7px; }
+
+        body.dark-mode, body.dark-mode .container {
+            background: #181a1b !important;
+            color: #e0e0e0 !important;
+        }
+
+        a, button, .standings-arrow, .btn, .score-box, .featured-match-row:hover {
+            cursor: url('/static/cursor/pointer.png'), pointer;
+        }
+
+        .footer {
+            left: 0;
+            right: 0;
+            width: 100vw;
+        }
+        /* Đảm bảo nội dung chính luôn đủ cao để footer không bị trồi lên */
+        .main-content {
+            min-height: calc(100vh - 180px); /* 180px = header + footer, điều chỉnh nếu cần */
+        }
+        body.darkmode .footer {
+            background: #23272b !important;
+            color: #e0e0e0 !important;
+            border-top: 1px solid #444 !important;
+        }
+        body.darkmode .footer span {
+            color: #f7b731 !important;
+        }
+
+        /* Dropdown hiệu ứng fade/slide */
+        .navbar .dropdown-menu {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.25s, transform 0.25s;
+            display: block;
+            visibility: hidden;
+            pointer-events: none;
+            min-width: 200px;
+        }
+        .navbar .dropdown.show .dropdown-menu {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+            pointer-events: auto;
+        }
+        /* Hiệu ứng hover cho item trong dropdown */
+        .dropdown-menu .dropdown-item {
+            transition: background 0.18s, color 0.18s;
+        }
+        .dropdown-menu .dropdown-item:hover, .dropdown-menu .dropdown-item.active {
+            background: #eaf1fb;
+            color: #1e3c72;
+        }
+        /* Hiệu ứng mũi tên xoay khi mở dropdown */
+        .navbar .dropdown-toggle::after {
+            transition: transform 0.25s;
+        }
+        .navbar .dropdown.show .dropdown-toggle::after {
+            transform: rotate(180deg);
+        }
+        /* Navbar trong suốt đầu trang, có màu khi scroll */
+        .navbar {
+            background: rgba(255,255,255,0) !important;
+            transition: background 0.35s, box-shadow 0.25s, border-bottom 0.25s;
+            border-bottom: 1px solid rgba(200,200,200,0.08) !important;
+            backdrop-filter: blur(8px);
+        }
+        .navbar.scrolled {
+            background: #fff !important;
+            border-bottom: 1px solid #e0e0e0 !important;
+            box-shadow: 0 4px 16px rgba(30,60,114,0.10);
+        }
+        body.darkmode .navbar {
+            background: rgba(35,39,43,0) !important;
+            border-bottom: 1px solid rgba(60,60,60,0.10) !important;
+        }
+        body.darkmode .navbar.scrolled {
+            background: #23272b !important;
+            border-bottom: 1px solid #444 !important;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- ===== NAVBAR SECTION ===== -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <span id="darkmode-toggle" style="cursor:pointer; margin-right: 18px; font-size: 1.5em;">
+                    <i class="fa-regular fa-moon" id="darkmode-icon"></i>
+                </span>
+            </div>
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link {% if active_tab == 'home' %}active{% endif %}" href="{{ url_for('home') }}"><i class="fa-solid fa-house"></i>Trang chủ</a></li>
+                <li class="nav-item dropdown {% if active_tab in ['prediction', 'prediction_history'] %}active{% endif %}">
+                  <a class="nav-link dropdown-toggle {% if active_tab in ['prediction', 'prediction_history'] %}active{% endif %}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-chart-simple"></i>Dự đoán
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item {% if active_tab == 'prediction' %}active{% endif %}" href="{{ url_for('prediction.prediction_page') }}">Dự đoán trận đấu</a></li>
+                    <li><a class="dropdown-item {% if active_tab == 'prediction_history' %}active{% endif %}" href="{{ url_for('prediction_history.prediction_history_page') }}">Lịch sử dự đoán</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link {% if active_tab == 'news' %}active{% endif %}" href="{{ url_for('news.news') }}"><i class="fa-solid fa-newspaper"></i>Tin tức</a></li>
+                <li class="nav-item"><a class="nav-link {% if active_tab == 'favorites' %}active{% endif %}" href="{{ url_for('favorites.favorites') }}"><i class="fa-solid fa-heart"></i>Yêu thích</a></li>
+            </ul>
+            <div class="d-flex align-items-center">
+                {% if session.get('user_id') %}
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user"></i> {{ session.get('username') or 'Tài khoản' }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <li><span class="dropdown-item-text">Xin chào, {{ session.get('username') }}</span></li>
+                        <li><a class="dropdown-item" href="{{ url_for('favorites.favorites') }}">Đội yêu thích</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Đăng xuất</a></li>
+                    </ul>
+                </div>
+                {% else %}
+                <a class="btn btn-outline-primary me-2" href="{{ url_for('auth.login') }}">Đăng nhập</a>
+                <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Đăng ký</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- ===== TOAST SECTION ===== -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="deleteToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Trận đấu đã được xóa!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCROLL TOP BUTTON SECTION ===== -->
+    <button id="scrollTopBtn" title="Lên đầu trang" style="display:none;position:fixed;bottom:32px;right:32px;z-index:9999;background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;border:none;border-radius:50%;width:48px;height:48px;box-shadow:0 4px 16px rgba(30,60,114,0.15);font-size:1.7em;align-items:center;justify-content:center;transition:background 0.3s,transform 0.2s;">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- ===== FOOTER SECTION ===== -->
+    <footer class="footer mt-5 py-3 " style="background: #f8f9fa; color: #222; text-align: center; border-top: 1px solid #e0e0e0; font-size: 1em; z-index: 1050;">
+        Made by <b>Group 2</b> ♥ Tất cả dự đoán đều phục vụ cho việc nghiên cứu, học tập.<br>
+        <span style="color:#e74c3c;font-weight:500;">Pháp luật Việt Nam nghiêm cấm hành vi cá cược dưới mọi hình thức.</span>
+    </footer>
+
+    <!-- ===== SCRIPTS SECTION ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Main Application Script -->
+    <script>
+        // Scroll to top button functionality
+        window.addEventListener('scroll', function() {
+            const btn = document.getElementById('scrollTopBtn');
+            if (window.scrollY > 200) {
+                btn.style.display = 'flex';
+                btn.style.transform = 'scale(1)';
+            } else {
+                btn.style.display = 'none';
+                btn.style.transform = 'scale(0.8)';
+            }
+        });
+
+        document.getElementById('scrollTopBtn').onclick = function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+
+        const scrollBtn = document.getElementById('scrollTopBtn');
+        scrollBtn.addEventListener('mouseenter', function() {
+            scrollBtn.style.background = 'linear-gradient(135deg,#2a5298,#1e3c72)';
+            scrollBtn.style.transform = 'scale(1.12)';
+        });
+        scrollBtn.addEventListener('mouseleave', function() {
+            scrollBtn.style.background = 'linear-gradient(135deg,#1e3c72,#2a5298)';
+            scrollBtn.style.transform = 'scale(1)';
+        });
+
+        // Navbar shadow khi scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Dropdown hiệu ứng mở bằng hover (desktop)
+        document.querySelectorAll('.navbar .dropdown').forEach(function(drop) {
+            drop.addEventListener('mouseenter', function() {
+                if (window.innerWidth > 991) {
+                    drop.classList.add('show');
+                    drop.querySelector('.dropdown-menu').classList.add('show');
+                }
+            });
+            drop.addEventListener('mouseleave', function() {
+                if (window.innerWidth > 991) {
+                    drop.classList.remove('show');
+                    drop.querySelector('.dropdown-menu').classList.remove('show');
+                }
+            });
+        });
+    </script>
+
+    <!-- Dark Mode Script -->
+    <script>
+        const darkmodeToggle = document.getElementById('darkmode-toggle');
+        const darkmodeIcon = document.getElementById('darkmode-icon');
+        
+        function setDarkmode(on) {
+            if(on) {
+                document.body.classList.add('darkmode');
+                darkmodeIcon.classList.remove('fa-moon','fa-regular');
+                darkmodeIcon.classList.add('fa-sun','fa-solid');
+            } else {
+                document.body.classList.remove('darkmode');
+                darkmodeIcon.classList.remove('fa-sun','fa-solid');
+                darkmodeIcon.classList.add('fa-moon','fa-regular');
+            }
+        }
+
+        function saveDarkmode(on) {
+            localStorage.setItem('darkmode', on ? '1' : '0');
+        }
+
+        function loadDarkmode() {
+            const val = localStorage.getItem('darkmode');
+            setDarkmode(val === '1');
+        }
+
+        darkmodeToggle.onclick = function() {
+            const isDark = document.body.classList.contains('darkmode');
+            setDarkmode(!isDark);
+            saveDarkmode(!isDark);
+        };
+
+        loadDarkmode();
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html> 

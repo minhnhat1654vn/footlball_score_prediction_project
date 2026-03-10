@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán Manchester United vs Everton - Premier League 2025/26</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="match-container">
+        <header>
+            <h1>Manchester United chạm trán Everton tại Old Trafford</h1>
+            <p class="timestamp">Cập nhật: 08:30 AM, 12/05/2025</p>
+        </header>
+        <main>
+            <section class="match-overview">
+                <h2>Dự đoán trận đấu</h2>
+                <p><strong>Ngày:</strong> 14/12/2025, 12:30 PM (giờ địa phương)</p>
+                <p><strong>Địa điểm:</strong> Old Trafford, Manchester, Anh</p>
+                <p><strong>Dự đoán tỷ số:</strong> Manchester United 1-0 Everton</p>
+                <img src="https://i.ex-cdn.com/nongnghiepmoitruong.vn/files/content/2023/11/27/gar-012224_755-070447.jpeg" alt="Manchester United vs Everton" class="match-image">
+            </section>
+            <section class="prediction-analysis">
+                <h2>Phân tích và dự đoán</h2>
+                <h3>Phong độ gần đây</h3>
+                <p><strong>Manchester United:</strong> United cải thiện phong độ dưới sự dẫn dắt của Ruben Amorim, nhưng khả năng dứt điểm kém (xG 9.6, chỉ ghi 5 bàn sau 5 trận). Rasmus Højlund và Marcus Rashford là mũi nhọn.</p>
+                <p><strong>Everton:</strong> Everton, dưới sự dẫn dắt của Sean Dyche, chơi phòng ngự chắc chắn, nhưng thiếu hỏa lực tấn công, chỉ ghi 15 bàn sau 13 vòng mùa này.</p>
+                <h3>Lịch sử đối đầu</h3>
+                <p>United chiếm ưu thế:</p>
+                <ul>
+                    <li>Premier League 2024/25: United thắng 2-0 (nhà), hòa 1-1 (khách).</li>
+                    <li>Premier League 2023/24: United thắng 3-0 (nhà), 2-0 (khách).</li>
+                </ul>
+                <h3>Đội hình dự kiến</h3>
+                <p><strong>Manchester United (4-2-3-1):</strong> André Onana; Diogo Dalot, Matthijs de Ligt, Lisandro Martínez, Luke Shaw; Casemiro, Kobbie Mainoo; Alejandro Garnacho, Bruno Fernandes, Marcus Rashford; Rasmus Højlund.</p>
+                <p><strong>Everton (4-4-2):</strong> Jordan Pickford; Ashley Young, James Tarkowski, Jarrad Branthwaite, Vitaliy Mykolenko; Jack Harrison, Idrissa Gueye, Abdoulaye Doucouré, Dwight McNeil; Dominic Calvert-Lewin, Beto.</p>
+                <h3>Cầu thủ đáng chú ý</h3>
+                <p><strong>Manchester United - Rasmus Højlund:</strong> Tiền đạo Đan Mạch ghi 6 bàn mùa này, là hy vọng lớn trong vòng cấm.</p>
+                <p><strong>Everton - Jordan Pickford:</strong> Thủ môn Anh với phản xạ xuất sắc, có thể cứu thua trong các tình huống nguy hiểm.</p>
+                <h3>Yếu tố chiến thuật</h3>
+                <p><strong>Manchester United:</strong> Sơ đồ 4-2-3-1 với tấn công cánh qua Rashford-Garnacho. Fernandes sẽ tạo cơ hội cho Højlund.</p>
+                <p><strong>Everton:</strong> Sơ đồ 4-4-2 với phòng ngự số đông và phản công qua Calvert-Lewin, nhưng khó xuyên thủng hàng thủ United.</p>
+                <h3>Lý do dự đoán</h3>
+                <p>Manchester United được dự đoán thắng 1-0 vì:</p>
+                <ul>
+                    <li>Lịch sử đối đầu vượt trội, thắng 5/6 trận gần đây tại Old Trafford.</li>
+                    <li>Phong độ cải thiện dưới Amorim, với Højlund và Rashford đủ sức ghi bàn quyết định.</li>
+                    <li>Everton chơi phòng ngự chắc chắn, nhưng thiếu hỏa lực để tạo bất ngờ.</li>
+                </ul>
+            </section>
+            <section class="related-articles">
+                <h2>Bài viết liên quan</h2>
+                <ul>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='chelsea-newcastle-2025') }}">Chelsea đối đầu Newcastle tại Stamford Bridge</a></li>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='fulham-liverpool-2025') }}">Fulham đối đầu Liverpool tại Craven Cottage</a></li>
+                </ul>
+            </section>
+        </main>
+        <footer>
+            <a href="{{ url_for('news.news') }}">Quay lại Trang Chủ</a>
+        </footer>
+    </div>
+</body>
+</html>

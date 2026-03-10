@@ -1,0 +1,856 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* Slideshow */
+    .slideshow-bg {
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        background-color: rgba(30,60,114,0.7);
+        border-radius: 50%;
+    }
+    #home-slideshow {
+        width: 100vw;
+        max-width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        border-radius: 0;
+        box-shadow: none;
+        z-index: 1;
+        display: block;
+        margin-top: 0vh;
+    }
+    @media (max-width: 768px) {
+        .slideshow-bg {
+            min-height: 100vh;
+        }
+        #home-slideshow {
+            min-height: 100vh;
+        }
+    }
+
+    /* Prediction Box */
+    .prediction-box {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        
+    }
+
+    .news-section .prediction-box {
+        max-width: 1300px;
+        margin-left: 0;
+    }
+    .ranking-section .prediction-box {
+        max-width: 1300px;
+        margin-left: 0;
+    }
+    .featured-matches-section .prediction-box {
+        max-width: 1300px;
+        margin-left: 0;
+    }
+    .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin: 0 1.5px; vertical-align: middle; }
+    .dot-win { background: #2ecc40; }
+    .dot-draw { background: #f7b731; }
+    .dot-lose { background: #e74c3c; }
+    .standings-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 10px; }
+    .standings-arrow { cursor: pointer; font-size: 1.5em; color: #1e3c72; transition: color 0.2s; }
+    .standings-arrow:hover { color: #f7b731; }
+    .standings-league-name { font-size: 1.2em; font-weight: bold; }
+    .standings-table { min-width: 100%; }
+    .standings-title {
+        display: flex;
+        align-items: center;
+        font-size: 1.35em;
+        font-weight: 700;
+        margin-bottom: 14px;
+        letter-spacing: 0.5px;
+        text-align: left;
+        color: #222;
+    }
+    .standings-table th, .standings-table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    .standings-table th:first-child, .standings-table td:first-child {
+        text-align: center;
+        min-width: 60px;
+    }
+    .standings-table th:nth-child(2), .standings-table td:nth-child(2) {
+        text-align: left;
+        padding-left: 12px;
+        min-width: 180px;
+    }
+    .standings-table th:last-child, .standings-table td:last-child {
+        text-align: center;
+        min-width: 100px;
+    }
+    .featured-matches-section .prediction-box {
+        max-width: 1300px;
+        margin-left: 0;
+    }
+    #featured-matches-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 24px 0;
+    }
+    .featured-matches-section .card {
+        box-shadow: 0 2px 8px rgba(30,60,114,0.07);
+        border-radius: 12px;
+        border: 1px solid #eaeaea;
+        transition: box-shadow 0.2s;
+        min-width: 320px;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    .featured-matches-section .card:hover {
+        box-shadow: 0 4px 16px rgba(30,60,114,0.13);
+    }
+    .featured-matches-section .card-body {
+        padding: 18px 18px 14px 18px;
+    }
+    .featured-matches-section .fw-bold {
+        font-size: 1.25em;
+        letter-spacing: 0.5px;
+    }
+    .featured-matches-section .badge {
+        font-size: 1em;
+        margin-top: 8px;
+    }
+    .featured-matches-section .d-flex.align-items-center.mb-2 {
+        justify-content: center;
+    }
+    .featured-matches-section .text-muted.small.mb-1 {
+        text-align: center;
+        display: block;
+        margin-bottom: 0.5em;
+    }
+    .featured-matches-title-redstar {
+        display: flex;
+        align-items: center;
+        font-size: 1.35em;
+        font-weight: 700;
+        margin-bottom: 14px;
+        letter-spacing: 0.5px;
+        text-align: left;
+        color: #222;
+    }
+    .featured-matches-title-redstar .fa-star {
+        margin-right: 10px;
+        color: #e74c3c;
+        font-size: 1.2em;
+    }
+    .featured-matches-section .match-row-flex {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-height: 40px;
+    }
+    .featured-matches-section .team-name {
+        max-width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 500;
+        font-size: 1.08em;
+        text-align: right;
+    }
+    .featured-matches-section .team-name.away {
+        text-align: left;
+    }
+    .featured-matches-section .score-box {
+        margin-left: 100px;
+        min-width: 54px;
+        font-size: 1.35em;
+        font-weight: bold;
+        margin: 0 8px;
+        text-align: center;
+        background: #f7f7fa;
+        border-radius: 8px;
+        padding: 2px 12px;
+        display: inline-block;
+    }
+    @media (max-width: 600px) {
+        .featured-matches-section .team-name {
+            max-width: 70px;
+            font-size: 0.98em;
+        }
+        .featured-matches-section .score-box {
+            font-size: 1.1em;
+            padding: 2px 6px;
+        }
+    }
+    .featured-matches-section .featured-match-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.07);
+        border: 1px solid #eaeaea;
+        margin-bottom: 28px;
+        padding: 22px 48px 16px 48px;
+        min-width: 320px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+    }
+    .featured-matches-section .featured-match-main {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+    }
+    .featured-matches-section .team-logo {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        margin: 0 10px;
+    }
+    .featured-matches-section .team-name {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 500;
+        font-size: 1.08em;
+        text-align: right;
+    }
+    .featured-matches-section .team-name.away {
+        text-align: left;
+    }
+    .featured-matches-section .score-box {
+        margin-left: 100px;
+        min-width: 54px;
+        font-size: 1.45em;
+        font-weight: bold;
+        margin: 0 18px;
+        text-align: center;
+        background: #f7f7fa;
+        border-radius: 8px;
+        padding: 2px 16px;
+        display: inline-block;
+    }
+    .featured-matches-section .match-info {
+        position: absolute;
+        display: block;
+        color: #888;
+        font-size: 0.98em;
+        margin-top: 2px;
+        margin-left: 620px;
+    }
+    .featured-matches-section .badge {
+        font-size: 1em;
+        margin-left: 18px;
+        min-width: 100px;
+        text-align: center;
+    }
+    @media (max-width: 900px) {
+        .featured-matches-section .featured-match-row {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 16px 10px 10px 10px;
+        }
+        .featured-matches-section .badge {
+            margin-left: 0;
+            margin-top: 8px;
+        }
+        .featured-matches-section .match-info {
+            margin-left: 0;
+        }
+    }
+    /* DARK MODE cho featured matches section */
+    body.darkmode .featured-matches-section .prediction-box {
+        background: #23272f !important;
+        color: #f1f1f1 !important;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.13);
+    }
+    body.darkmode .featured-matches-section .featured-match-row {
+        background: #23272f !important;
+        color: #f1f1f1 !important;
+        border: 1px solid #353b48;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.13);
+    }
+    body.darkmode .featured-matches-section .team-name,
+    body.darkmode .featured-matches-section .match-info {
+        color: #f1f1f1 !important;
+    }
+    body.darkmode .featured-matches-section .score-box {
+        background: #353b48 !important;
+        color: #fff !important;
+    }
+    body.darkmode .featured-matches-title-redstar {
+        color: #f1f1f1 !important;
+    }
+    body.darkmode .featured-matches-section .badge.bg-primary {
+        background: #1e3c72 !important;
+        color: #fff !important;
+    }
+    body.darkmode .featured-matches-section .badge.bg-warning {
+        background: #f7b731 !important;
+        color: #23272f !important;
+    }
+    body.darkmode .standings-title,
+    body.darkmode .standings-league-name {
+        color: #f1f1f1 !important;
+    }
+    body.darkmode .standings-table th,
+    body.darkmode .standings-table td {
+        color: #e0e0e0 !important;
+        border-color: #444 !important;
+    }
+    body.darkmode .standings-table {
+        background: #23272b !important;
+    }
+    /* Featured Teams Carousel */
+    #featured-teams-carousel {
+        transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+        min-height: 120px;
+    }
+    .featured-teams-viewport {
+        overflow: hidden;
+        width: 1104px; /* 4 cards * 260px + 3*24px margin */
+        max-width: 100vw;
+        padding-right: 24px
+    }
+    .featured-team-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.07);
+        border: 1px solid #eaeaea;
+        min-width: 260px;
+        max-width: 260px;
+        margin: 0 12px;
+        padding: 18px 18px 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        transition: box-shadow 0.2s, background 0.2s;
+    }
+    .featured-team-card img {
+        width: 54px;
+        height: 54px;
+        object-fit: contain;
+    }
+    .featured-team-card .team-name {
+        font-size: 1.2em;
+        font-weight: 700;
+        color: #222;
+    }
+    .featured-team-card .team-label {
+        font-size: 1em;
+        color: #888;
+        font-weight: 500;
+    }
+    body.darkmode .featured-team-card {
+        background: #23272f !important;
+        color: #f1f1f1 !important;
+        border: 1px solid #353b48;
+    }
+    body.darkmode .featured-team-card .team-name {
+        color: #f1f1f1 !important;
+    }
+    body.darkmode .featured-team-card .team-label {
+        color: #aaa !important;
+    }
+    body.darkmode #featured-teams-section .btn-light {
+        background: #353b48 !important;
+        color: #f1f1f1 !important;
+        border: none;
+    }
+    .fade-out {
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+    .fade-in {
+        opacity: 1;
+        transition: opacity 0.4s;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ===== HOME TAB SECTION ===== -->
+<!-- Slideshow Section -->
+<div id="home-slideshow" class="carousel slide carousel-fade mb-4" data-bs-ride="carousel" data-bs-interval="4000" style="display: block;">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#home-slideshow" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#home-slideshow" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#home-slideshow" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#home-slideshow" data-bs-slide-to="3" aria-label="Slide 4"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="slideshow-bg d-flex align-items-center justify-content-center" style="height:100vh; background:url('/static/slideshow/slide1.jpg') center/cover no-repeat;">
+                <h1 class="display-1 fw-bold text-white animate__animated animate__fadeInDown" style="letter-spacing: 0.1em; text-shadow: 2px 2px 8px #222;">
+                    FOOTBALL SCORE PREDICTION
+                </h1>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="slideshow-bg d-flex align-items-center justify-content-center" style="height:100vh; background:url('/static/slideshow/slide2.jpg') center/cover no-repeat;">
+                <h1 class="display-1 fw-bold text-warning animate__animated animate__fadeInUp" style="letter-spacing: 0.1em; text-shadow: 2px 2px 8px #222;">
+                    DỰ ĐOÁN TỈ SỐ BÓNG ĐÁ
+                </h1>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="slideshow-bg d-flex align-items-center justify-content-center" style="height:100vh; background:url('/static/slideshow/slide3.jpg') center/cover no-repeat;">
+                <h1 class="display-1 fw-bold text-info animate__animated animate__fadeInLeft" style="letter-spacing: 0.1em; text-shadow: 2px 2px 8px #222;">
+                    NHANH VÀ CHÍNH XÁC
+                </h1>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="slideshow-bg d-flex align-items-center justify-content-center" style="height:100vh; background:url('/static/slideshow/slide4.jpg') center/cover no-repeat;">
+                <h1 class="display-1 fw-bold text-success animate__animated animate__fadeInRight" style="letter-spacing: 0.1em; text-shadow: 2px 2px 8px #222;">
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Home Tab Content -->
+<div id="home" class="tab-content active home-active" >
+    <div class="container mt-4">
+        <div class="row news-section">
+            <div class="col-12">
+                <div class="prediction-box">
+                    <h4 class="mb-4"><i class="fas fa-newspaper"></i> Tin tức nổi bật</h4>
+                    <div id="news-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <a href="{{ url_for('matches.match_detail', match_id='psg-inter-2025') }}" class="text-decoration-none" style="color:inherit;">
+                                    <div class="card h-100 flex-row align-items-stretch" style="min-height:320px;">
+                                        <div class="col-md-6 p-0 d-flex align-items-center justify-content-center" style="background:#111;">
+                                            <img src="https://cdn-img.thethao247.vn/origin_640x0/storage/files/ctvqt/2025/05/08/psg-2-082008avatar.jpg" alt="PSG vs Inter Milan" style="width:100%; height:400px; object-fit:cover; border-radius:12px 0 0 12px;">
+                                        </div>
+                                        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+                                            <h5 class="card-title fw-bold mb-2">Chung kết Champions League: PSG vs Inter Milan</h5>
+                                            <p class="card-text text-muted mb-3">PSG đối đầu Inter Milan tại Allianz Arena, Munich. PSG được dự đoán thắng 2-1 nhờ hàng công đa dạng và phong độ vượt trội ở Champions League.</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <span class="badge bg-primary">Champions League</span>
+                                                <small class="text-muted">31/05/2025</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="carousel-item">
+                                <a href="{{ url_for('matches.match_detail', match_id='brazil-argentina-2025') }}" class="text-decoration-none" style="color:inherit;">
+                                    <div class="card h-100 flex-row align-items-stretch" style="min-height:320px;">
+                                        <div class="col-md-6 p-0 d-flex align-items-center justify-content-center" style="background:#111;">
+                                            <img src="https://cdn.bongdaplus.vn/Assets/Media/2019/07/02/26/brazil-argentina.jpg" alt="Brazil vs Argentina" style="width:100%; height:400px; object-fit:cover; border-radius:12px 0 0 12px;">
+                                        </div>
+                                        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+                                            <h5 class="card-title fw-bold mb-2">Siêu kinh điển Nam Mỹ: Brazil vs Argentina</h5>
+                                            <p class="card-text text-muted mb-3">Brazil và Argentina đối đầu tại Florida, Mỹ. Dự đoán hòa 1-1: Brazil mạnh tấn công, Argentina phòng ngự chắc chắn, thiếu Messi nên chơi an toàn.</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <span class="badge bg-primary">Giao hữu Quốc tế</span>
+                                                <small class="text-muted">12/06/2025</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="carousel-item">
+                                <a href="{{ url_for('matches.match_detail', match_id='usa-mexico-2025') }}" class="text-decoration-none" style="color:inherit;">
+                                    <div class="card h-100 flex-row align-items-stretch" style="min-height:320px;">
+                                        <div class="col-md-6 p-0 d-flex align-items-center justify-content-center" style="background:#111;">
+                                            <img src="https://static01.nyt.com/images/blogs/goal/posts/12feilheiber.480.jpg" alt="USA vs Mexico" style="width:100%; height:400px; object-fit:cover; border-radius:12px 0 0 12px;">
+                                        </div>
+                                        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+                                            <h5 class="card-title fw-bold mb-2">Derby Bắc Mỹ: USA vs Mexico</h5>
+                                            <p class="card-text text-muted mb-3">USA trẻ hóa đội hình, vừa thắng Mexico 2-0 ở Nations League. Dự đoán USA thắng 2-1 nhờ hàng công đa dạng, Mexico thiếu sắc bén.</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <span class="badge bg-primary">CONCACAF</span>
+                                                <small class="text-muted">07/06/2025</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="carousel-item">
+                                <a href="{{ url_for('matches.match_detail', match_id='arsenal-bournemouth-2025') }}" class="text-decoration-none" style="color:inherit;">
+                                    <div class="card h-100 flex-row align-items-stretch" style="min-height:320px;">
+                                        <div class="col-md-6 p-0 d-flex align-items-center justify-content-center" style="background:#111;">
+                                            <img src="https://imgvlive.vtvcab.vn/720X405/36d75643-4578-4d22-a267-aeed7ae68b3c.jpg" alt="Arsenal vs Bournemouth" style="width:100%; height:400px; object-fit:cover; border-radius:12px 0 0 12px;">
+                                        </div>
+                                        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+                                            <h5 class="card-title fw-bold mb-2">Premier League: Arsenal vs Bournemouth</h5>
+                                            <p class="card-text text-muted mb-3">Arsenal bất bại 5 trận, tiếp đón Bournemouth tại Emirates. Dự đoán Arsenal thắng 2-1 nhờ chất lượng đội hình và phong độ ổn định.</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <span class="badge bg-primary">Premier League</span>
+                                                <small class="text-muted">13/12/2025</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="carousel-item">
+                                <a href="{{ url_for('matches.match_detail', match_id='man-city-crystal-palace-2025') }}" class="text-decoration-none" style="color:inherit;">
+                                    <div class="card h-100 flex-row align-items-stretch" style="min-height:320px;">
+                                        <div class="col-md-6 p-0 d-flex align-items-center justify-content-center" style="background:#111;">
+                                            <img src="https://bongdadoisong.vn/uploads/images/2023/12/15/man-city-crystal-palace-1702619481.jpg" alt="Manchester City vs Crystal Palace" style="width:100%; height:400px; object-fit:cover; border-radius:12px 0 0 12px;">
+                                        </div>
+                                        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+                                            <h5 class="card-title fw-bold mb-2">Chung kết FA Cup: Man City vs Crystal Palace</h5>
+                                            <p class="card-text text-muted mb-3">Man City bất bại 10 trận cúp, Haaland dẫn đầu hàng công. Palace gây bất ngờ vào chung kết nhưng khó cản City. Dự đoán City thắng 3-1.</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <span class="badge bg-primary">FA Cup</span>
+                                                <small class="text-muted">24/05/2025</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#news-carousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#news-carousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ranking Table Section (Dynamic Standings) -->
+        <div class="row mt-4 ranking-section">
+            <div class="col-12">
+                <div class="prediction-box" id="standings-box">
+                    <div class="standings-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                        <div style="display:flex;align-items:center;">
+                            <i class="fas fa-trophy" style="margin-right:10px;color:#f7b731;"></i> Bảng xếp hạng
+                        </div>
+                        <button id="standings-refresh" class="btn btn-sm btn-outline-primary" title="Refresh">
+                            <i class="fas fa-rotate-right"></i>
+                        </button>
+                    </div>
+                    <div class="standings-nav">
+                        <span class="standings-arrow" id="standings-prev">&#8592;</span>
+                        <span class="standings-league-name" id="standings-league-name">Đang tải...</span>
+                        <span class="standings-arrow" id="standings-next">&#8594;</span>
+                    </div>
+                    <div id="standings-table-container" class="fade-in">
+                        <div class="text-center text-muted">Chưa có dữ liệu. Bấm Refresh để tải.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Matches Section -->
+        <div class="row mt-4 featured-matches-section">
+            <div class="col-12">
+                <div class="prediction-box">
+                    <div class="d-flex align-items-center justify-content-between mb-4" style="gap:12px;">
+                        <h4 class="featured-matches-title-redstar mb-0"><i class="fas fa-star"></i> Trận đấu nổi bật</h4>
+                        <button id="featured-matches-refresh" class="btn btn-sm btn-outline-primary" title="Refresh">
+                            <i class="fas fa-rotate-right"></i>
+                        </button>
+                    </div>
+                    <div class="row" id="featured-matches-row">
+                        <!-- Các trận đấu sẽ được load động ở đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Featured Teams Section -->
+        <div class="row mt-4" id="featured-teams-section">
+            <div class="col-12">
+                <div class="prediction-box">
+                    <div class="d-flex align-items-center justify-content-between mb-4" style="gap:12px;">
+                        <h4 class="mb-0" style="font-weight:700;"><i class="fas fa-users" style="color:#1e3c72;margin-right:10px;"></i>CLB nổi bật</h4>
+                        <button id="featured-teams-refresh" class="btn btn-sm btn-outline-primary" title="Refresh">
+                            <i class="fas fa-rotate-right"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center position-relative">
+                        <button id="teams-prev" class="btn btn-light btn-sm me-2" style="z-index:2;"><i class="fas fa-chevron-left"></i></button>
+                        <div class="featured-teams-viewport">
+                            <div id="featured-teams-carousel" class="d-flex flex-nowrap" style="min-height:120px;">
+                                <!-- Các CLB sẽ được load động ở đây -->
+                            </div>
+                        </div>
+                        <button id="teams-next" class="btn btn-light btn-sm ms-2" style="z-index:2;"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const LEAGUES = [
+    { id: 39, name: 'Premier League', logo: 'https://media.api-sports.io/football/leagues/39.png' },
+    { id: 140, name: 'La Liga', logo: 'https://media.api-sports.io/football/leagues/140.png' },
+    { id: 135, name: 'Serie A', logo: 'https://media.api-sports.io/football/leagues/135.png' },
+    { id: 78, name: 'Bundesliga', logo: 'https://media.api-sports.io/football/leagues/78.png' },
+    { id: 61, name: 'Ligue 1', logo: 'https://media.api-sports.io/football/leagues/61.png' }
+];
+let currentLeagueIdx = 0;
+
+const HOME_CACHE = {
+    standings: (leagueId) => `home_cache_standings_${leagueId}`,
+    featuredMatches: () => `home_cache_featured_matches_39`,
+    featuredTeams: () => `home_cache_featured_teams_39`,
+};
+
+function readCache(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function writeCache(key, data) {
+    try {
+        localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data }));
+    } catch (e) {}
+}
+
+function renderStandings(league, data) {
+    const standingsContainer = document.getElementById('standings-table-container');
+    // Bắt đầu hiệu ứng fade out
+    standingsContainer.classList.remove('fade-in');
+    standingsContainer.classList.add('fade-out');
+    setTimeout(() => {
+        document.getElementById('standings-league-name').innerHTML = `<img src="${league.logo}" alt="logo" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;">${league.name}`;
+        // Sofascore format: { standings: [{ rows: [...] }] }
+        if (!data || !data.standings || !data.standings[0] || !data.standings[0].rows) {
+            standingsContainer.innerHTML = '<div class="text-muted text-center">Chưa có dữ liệu. Bấm Refresh để tải.</div>';
+            standingsContainer.classList.remove('fade-out');
+            standingsContainer.classList.add('fade-in');
+            return;
+        }
+        const rows = data.standings[0].rows;
+        let html = `<table class="table table-hover standings-table">
+            <thead><tr>
+                <th>Vị trí</th>
+                <th>Câu lạc bộ</th>
+                <th>W</th><th>D</th><th>L</th><th>Điểm</th><th>Hiệu số</th>
+            </tr></thead><tbody>`;
+        rows.slice(0, 10).forEach((row) => {
+            const team = row.team || {};
+            html += `<tr>
+                <td>${row.position || 'N/A'}</td>
+                <td><img src="${team.imageUrl || '/static/images/teams/default.png'}" alt="logo" style="width:24px;height:24px;object-fit:contain;margin-right:6px;vertical-align:middle;" onerror="this.src='/static/images/teams/default.png'">${team.name || 'N/A'}</td>
+                <td>${row.wins || 0}</td>
+                <td>${row.draws || 0}</td>
+                <td>${row.losses || 0}</td>
+                <td>${row.points || 0}</td>
+                <td>${row.scoreDiffFormatted || (row.scoresFor - row.scoresAgainst)}</td>
+            </tr>`;
+        });
+        html += '</tbody></table>';
+        standingsContainer.innerHTML = html;
+        standingsContainer.classList.remove('fade-out');
+        standingsContainer.classList.add('fade-in');
+    }, 400); // Thời gian trùng với transition
+}
+
+function renderStandingsFromCache(idx) {
+    const league = LEAGUES[idx];
+    const cached = readCache(HOME_CACHE.standings(league.id));
+    renderStandings(league, cached ? cached.data : null);
+}
+
+function refreshStandings(idx) {
+    const league = LEAGUES[idx];
+    const standingsContainer = document.getElementById('standings-table-container');
+    standingsContainer.innerHTML = '<div class="text-center">Đang tải bảng xếp hạng...</div>';
+    // refresh=1 để backend xóa cache và gọi API lấy dữ liệu mới
+    fetch(`/api/standings/${league.id}?refresh=1`)
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.error) {
+                standingsContainer.innerHTML = '<div class="text-danger text-center">' + (data.error || 'Lỗi khi tải dữ liệu!') + '</div>';
+                return;
+            }
+            writeCache(HOME_CACHE.standings(league.id), data);
+            renderStandings(league, data);
+        })
+        .catch(() => {
+            standingsContainer.innerHTML = '<div class="text-danger text-center">Lỗi khi tải dữ liệu!</div>';
+        });
+}
+
+function nextLeague() {
+    currentLeagueIdx = (currentLeagueIdx + 1) % LEAGUES.length;
+    renderStandingsFromCache(currentLeagueIdx);
+}
+function prevLeague() {
+    currentLeagueIdx = (currentLeagueIdx - 1 + LEAGUES.length) % LEAGUES.length;
+    renderStandingsFromCache(currentLeagueIdx);
+}
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('standings-prev').onclick = prevLeague;
+    document.getElementById('standings-next').onclick = nextLeague;
+    document.getElementById('standings-refresh').onclick = function() {
+        refreshStandings(currentLeagueIdx);
+    };
+    renderStandingsFromCache(currentLeagueIdx);
+});
+
+function renderFeaturedMatchesFromData(matches) {
+            let html = '';
+            if (!matches || matches.length === 0) {
+                html = '<div class="text-muted text-center">Chưa có dữ liệu. Bấm Refresh để tải.</div>';
+            } else {
+                // Show first 5 matches
+                matches.slice(0, 5).forEach(match => {
+                    const homeTeam = match.homeTeam || {};
+                    const awayTeam = match.awayTeam || {};
+                    const tournament = match.tournament?.uniqueTournament || {};
+                    const status = match.status || {};
+                    const homeScore = match.homeScore || {};
+                    const awayScore = match.awayScore || {};
+                    
+                    const isFinished = status.type === 'finished' || status.type === 'ended';
+                    const score = isFinished 
+                        ? `${homeScore.normaltime || homeScore.current || 0} - ${awayScore.normaltime || awayScore.current || 0}`
+                        : 'vs';
+                    
+                    const matchDate = match.startTimestamp 
+                        ? new Date(match.startTimestamp * 1000).toLocaleString('vi-VN')
+                        : 'N/A';
+                    
+                    html += `
+                    <div class="featured-match-row">
+                        <div class="featured-match-main">
+                            <img class="team-logo" src="${homeTeam.imageUrl || '/static/images/teams/default.png'}" alt="${homeTeam.name || 'Home'}" onerror="this.src='/static/images/teams/default.png'">
+                            <span class="mx-2 team-name">${homeTeam.name || 'Home'}</span>
+                            <span class="score-box">${score}</span>
+                            <span class="mx-2 team-name away">${awayTeam.name || 'Away'}</span>
+                            <img class="team-logo" src="${awayTeam.imageUrl || '/static/images/teams/default.png'}" alt="${awayTeam.name || 'Away'}" onerror="this.src='/static/images/teams/default.png'">
+                            <span class="match-info">${tournament.name || 'Premier League'} · ${matchDate}</span>
+                        </div>
+                        <span class="badge ${isFinished ? 'bg-primary' : 'bg-warning text-dark'}">${isFinished ? 'Đã kết thúc' : 'Sắp diễn ra'}</span>
+                    </div>`;
+                });
+            }
+            document.getElementById('featured-matches-row').innerHTML = html;
+}
+
+function renderFeaturedMatchesFromCache() {
+    const cached = readCache(HOME_CACHE.featuredMatches());
+    renderFeaturedMatchesFromData(cached ? cached.data : null);
+}
+
+function refreshFeaturedMatches() {
+    document.getElementById('featured-matches-row').innerHTML = '<div class="text-center">Đang tải...</div>';
+    fetch('/api/fixtures/39')
+        .then(res => res.json())
+        .then(matches => {
+            writeCache(HOME_CACHE.featuredMatches(), matches);
+            renderFeaturedMatchesFromData(matches);
+        })
+        .catch((err) => {
+            console.error('Error loading featured matches:', err);
+            document.getElementById('featured-matches-row').innerHTML = '<div class="text-danger">Không thể tải dữ liệu trận đấu nổi bật!</div>';
+        });
+}
+
+let featuredTeamsInterval = null;
+function renderFeaturedTeamsFromStandings(data) {
+            const carousel = document.getElementById('featured-teams-carousel');
+            if (!carousel) return;
+            
+            let teams = [];
+            if (data.standings && data.standings[0] && data.standings[0].rows) {
+                // Get top 8 teams
+                teams = data.standings[0].rows.slice(0, 8).map(row => ({
+                    name: row.team?.name || 'Unknown',
+                    logo: row.team?.imageUrl || '/static/images/teams/default.png',
+                    position: row.position,
+                    points: row.points
+                }));
+            }
+            
+            if (teams.length === 0) {
+                carousel.innerHTML = '<div class="text-muted text-center">Chưa có dữ liệu. Bấm Refresh để tải.</div>';
+                return;
+            }
+            
+            let html = '';
+            teams.forEach(team => {
+                html += `<div class="featured-team-card flex-shrink-0">
+                    <img src="${team.logo}" alt="${team.name}" onerror="this.src='/static/images/teams/default.png'">
+                    <div>
+                        <div class="team-label">Vị trí ${team.position} · ${team.points} điểm</div>
+                        <div class="team-name">${team.name}</div>
+                    </div>
+                </div>`;
+            });
+            carousel.innerHTML = html;
+            
+            // Carousel logic
+            let idx = 0;
+            const CARD_WIDTH = 260 + 24; // 260px card + 24px margin
+            const maxIdx = Math.max(0, teams.length - 4); // 4 cards visible
+            function updateCarousel() {
+                carousel.style.transform = `translateX(-${idx * CARD_WIDTH}px)`;
+            }
+            document.getElementById('teams-prev').onclick = function() {
+                idx = Math.max(0, idx - 1);
+                updateCarousel();
+            };
+            document.getElementById('teams-next').onclick = function() {
+                idx = Math.min(maxIdx, idx + 1);
+                updateCarousel();
+            };
+            // Auto slide
+            if (featuredTeamsInterval) clearInterval(featuredTeamsInterval);
+            featuredTeamsInterval = setInterval(() => {
+                idx = (idx < maxIdx) ? idx + 1 : 0;
+                updateCarousel();
+            }, 5000);
+}
+
+function renderFeaturedTeamsFromCache() {
+    const cached = readCache(HOME_CACHE.featuredTeams());
+    renderFeaturedTeamsFromStandings(cached ? cached.data : {});
+}
+
+function refreshFeaturedTeams() {
+    const carousel = document.getElementById('featured-teams-carousel');
+    if (carousel) carousel.innerHTML = '<div class="text-center">Đang tải...</div>';
+    fetch('/api/standings/39')
+        .then(res => res.json())
+        .then(data => {
+            writeCache(HOME_CACHE.featuredTeams(), data);
+            renderFeaturedTeamsFromStandings(data);
+        })
+        .catch((err) => {
+            console.error('Error loading featured teams:', err);
+            if (carousel) carousel.innerHTML = '<div class="text-danger">Không thể tải dữ liệu!</div>';
+        });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('featured-matches-refresh').onclick = refreshFeaturedMatches;
+    document.getElementById('featured-teams-refresh').onclick = refreshFeaturedTeams;
+    renderFeaturedMatchesFromCache();
+    renderFeaturedTeamsFromCache();
+});
+</script>
+{% endblock %} 

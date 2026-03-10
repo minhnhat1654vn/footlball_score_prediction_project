@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .history-table {
+        width: 100%;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.06);
+        overflow: hidden;
+        margin-top: 16px;
+    }
+    .history-table th, .history-table td {
+        padding: 12px 10px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .history-table th {
+        background: #1e3c72;
+        color: #fff;
+        font-weight: 600;
+        border-bottom: 2px solid #2a5298;
+    }
+    .history-table tr:nth-child(even) {
+        background: #f5f8fa;
+    }
+    .history-table tr {
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+    }
+    .history-table tr:hover {
+        background: #eaf1fb;
+        border-left: 3px solid #1e3c72;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.1);
+    }
+    .score-pred {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #1e3c72;
+    }
+    .score-real {
+        font-size: 1.2em;
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    .score-real.win {
+        color: #27ae60;
+        background: rgba(39, 174, 96, 0.1);
+    }
+    .score-real.loss {
+        color: #e74c3c;
+        background: rgba(231, 76, 60, 0.1);
+    }
+    .score-real.draw {
+        color: #f39c12;
+        background: rgba(243, 156, 18, 0.1);
+    }
+    .no-result {
+        color: #aaa;
+        font-style: italic;
+    }
+    body.darkmode .history-table {
+        background: #23272b !important;
+        color: #e0e0e0 !important;
+    }
+    body.darkmode .history-table th,
+    body.darkmode .history-table td {
+        color: #e0e0e0 !important;
+        border-color: #444 !important;
+    }
+    body.darkmode .history-table tr:nth-child(even) {
+        background: #23272b !important;
+    }
+    body.darkmode .history-table tr:hover {
+        background: #23272f !important;
+        border-left: 3px solid #f7b731 !important;
+    }
+    body.darkmode .score-pred,
+    body.darkmode .score-real {
+        color: #f7b731 !important;
+    }
+
+    .lsdt-title {
+     margin-top: 100px;
+    }
+
+    #matchDetailModal .modal-dialog {
+      margin-top: 80px;
+    }
+
+    /* Tooltip styles */
+    [data-tooltip] {
+        position: relative;
+        cursor: help;
+    }
+    [data-tooltip]:before {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 5px 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1000;
+    }
+    [data-tooltip]:hover:before {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div id="prediction-history" class="mt-4"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa trận đấu này khỏi lịch sử dự đoán?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="btn-confirm-delete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Match Detail Modal -->
+<div class="modal fade" id="matchDetailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chi tiết trận đấu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="match-detail-content">
+        <!-- Nội dung sẽ được render bằng JS -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let currentSortType = 'history';
+function loadPredictionHistory() {
+    fetch('/get_prediction_history')
+    .then(response => response.json())
+    .then(history => {
+        const historyDiv = document.getElementById('prediction-history');
+        if (!historyDiv) return;
+        if (history.length === 0) {
+            historyDiv.innerHTML = '<div class="alert alert-info">Chưa có lịch sử dự đoán nào.</div>';
+            return;
+        }
+        // Luôn xóa fixture_id khỏi deletedPredictions nếu có trong cache (history)
+        let deleted = JSON.parse(localStorage.getItem('deletedPredictions') || '[]');
+        let fixtureIds = history.map(h => String(h.fixture_id));
+        let newDeleted = deleted.filter(id => !fixtureIds.includes(String(id)));
+        if (newDeleted.length !== deleted.length) {
+            localStorage.setItem('deletedPredictions', JSON.stringify(newDeleted));
+            deleted = newDeleted;
+        }
+        // Sắp xếp theo kiểu đã chọn
+        let sortedHistory = [...history];
+        if (currentSortType === 'date') {
+            sortedHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+        let html = `
+<h4 class="mb-3 text-center lsdt-title">Lịch sử dự đoán</h4>
+<div class="d-flex justify-content-end align-items-center mb-2" style="gap:10px;">
+  <label for="sortType" class="mb-0">Sắp xếp:</label>
+  <select id="sortType" class="form-select form-select-sm" style="width:auto;">
+    <option value="history"${currentSortType==='history'?' selected':''}>Theo thứ tự dự đoán</option>
+    <option value="date"${currentSortType==='date'?' selected':''}>Theo ngày trận đấu</option>
+  </select>
+</div>
+<div style="overflow-x:auto;">
+<table class="history-table">
+<thead>
+<tr>
+    <th>STT</th>
+    <th>Ngày</th>
+    <th>Trận đấu</th>
+    <th>Dự đoán</th>
+    <th>Xác suất</th>
+    <th>Trạng thái</th>
+    <th>Kết quả thực tế</th>
+</tr>
+</thead>
+<tbody>
+`;
+        let stt = 1;
+        sortedHistory.forEach((item, idx) => {
+            if (deleted.includes(item.fixture_id) || deleted.includes(String(item.fixture_id))) return;
+            let resultText = '';
+            if (item.home_win_prob >= item.draw_prob && item.home_win_prob >= item.away_win_prob) {
+                resultText = `${item.home_team} thắng ${item.away_team}`;
+            } else if (item.draw_prob >= item.home_win_prob && item.draw_prob >= item.away_win_prob) {
+                resultText = `${item.home_team} hòa ${item.away_team}`;
+            } else {
+                resultText = `${item.home_team} thua ${item.away_team}`;
+            }
+            let clickable = (
+                item.real_home_goals !== null && item.real_home_goals !== undefined &&
+                item.real_away_goals !== null && item.real_away_goals !== undefined
+            ) ? 'clickable-match' : '';
+            let statusBadge = '';
+            switch (item.status) {
+                case 'FT':
+                    statusBadge = '<span class="badge bg-success" data-tooltip="Kết thúc"><i class="fa fa-trophy me-1"></i>FT</span>';
+                    break;
+                case 'NS':
+                    statusBadge = '<span class="badge bg-secondary" data-tooltip="Chưa diễn ra"><i class="fa fa-clock me-1"></i>NS</span>';
+                    break;
+                case 'LIVE':
+                    statusBadge = '<span class="badge bg-danger" data-tooltip="Đang diễn ra"><i class="fa fa-bolt me-1"></i>LIVE</span>';
+                    break;
+                case 'AET':
+                case 'PEN':
+                    statusBadge = `<span class="badge bg-warning text-dark" data-tooltip="Hiệp phụ/penalty"><i class="fa fa-futbol me-1"></i>${item.status}</span>`;
+                    break;
+                case '1H':
+                    statusBadge = `<span class="badge bg-info text-dark" data-tooltip="Hiệp 1"><i class="fa fa-clock me-1"></i>1H</span>`;
+                    break;
+                case '2H':
+                    statusBadge = `<span class="badge bg-info text-dark" data-tooltip="Hiệp 2"><i class="fa fa-clock me-1"></i>2H</span>`;
+                    break;
+                default:
+                    statusBadge = `<span class="badge bg-light text-dark" data-tooltip="Trạng thái khác"><i class="fa fa-question-circle me-1"></i>${item.status}</span>`;
+            }
+
+            // Xác định class cho tỷ số thực tế
+            let scoreClass = '';
+            if (item.real_home_goals !== null && item.real_away_goals !== null) {
+                if (item.real_home_goals > item.real_away_goals) {
+                    scoreClass = 'win';
+                } else if (item.real_home_goals < item.real_away_goals) {
+                    scoreClass = 'loss';
+                } else {
+                    scoreClass = 'draw';
+                }
+            }
+
+            html += `<tr data-match-id="${item.fixture_id}" class="${clickable}">
+                <td>${stt++}</td>
+                <td>${item.date ? new Date(item.date * 1000).toLocaleString() : ''}</td>
+                <td>
+                  <img src="${item.home_team_logo}" alt="logo" style="height:20px;width:20px;object-fit:contain;margin-right:4px;vertical-align:middle;">
+                  <b>${item.home_team}</b>
+                  <span style="color:#888">vs</span>
+                  <img src="${item.away_team_logo}" alt="logo" style="height:20px;width:20px;object-fit:contain;margin-left:4px;vertical-align:middle;">
+                  <b>${item.away_team}</b>
+                </td>
+                <td>${resultText}</td>
+                <td class="score-pred">
+                    <div style="font-size:0.9em;">
+                        <div>${item.home_team}: <strong>${(item.home_win_prob * 100).toFixed(1)}%</strong></div>
+                        <div>Hòa: <strong>${(item.draw_prob * 100).toFixed(1)}%</strong></div>
+                        <div>${item.away_team}: <strong>${(item.away_win_prob * 100).toFixed(1)}%</strong></div>
+                    </div>
+                </td>
+                <td class="text-center">${statusBadge}</td>
+                <td class="score-real ${scoreClass}">
+                    ${(item.real_home_goals !== null && item.real_away_goals !== null && item.real_home_goals !== undefined && item.real_away_goals !== undefined)
+                        ? (item.real_home_goals + ' - ' + item.real_away_goals)
+                        : 'Chưa có'}
+                </td>
+            </tr>`;
+        });
+        html += '</tbody></table></div>';
+        historyDiv.innerHTML = html;
+        // Gán lại sự kiện cho select
+        const sortSelect = document.getElementById('sortType');
+        if (sortSelect) {
+            sortSelect.value = currentSortType;
+            sortSelect.onchange = function() {
+                currentSortType = this.value;
+                loadPredictionHistory();
+            };
+        }
+        // Sự kiện click vào trận đã diễn ra
+        document.querySelectorAll('.clickable-match').forEach(row => {
+            row.style.cursor = 'pointer';
+            row.addEventListener('click', function() {
+                const matchId = this.getAttribute('data-match-id');
+                const match = history.find(h => String(h.fixture_id) === String(matchId));
+                if (!match) return;
+                // Render modal content (fetch incidents for goal details)
+                fetch(`/api/match/${matchId}/incidents`)
+                  .then(res => res.json())
+                  .then(payload => {
+                    const incidents = payload.incidents || [];
+                    const goalEvents = incidents.filter(inc =>
+                      ['goal', 'goalPenalty', 'ownGoal'].includes(inc.incidentType)
+                    );
+                    // API Sofascore dùng isHome (true/false), không trả về team trên từng incident
+                    const homeGoals = goalEvents.filter(inc => inc.isHome === true);
+                    const awayGoals = goalEvents.filter(inc => inc.isHome === false);
+
+                    const renderGoals = (list) => list.length > 0
+                      ? '<ul class="list-group">' + list.map(inc => {
+                          const minute = inc.time != null ? `${inc.time}'` : '';
+                          const extra = (inc.addedTime != null && inc.addedTime > 0 && inc.addedTime < 100) ? `+${inc.addedTime}` : '';
+                          const player = inc.player?.name || '';
+                          const detail = inc.incidentClass || inc.incidentType || 'Goal';
+                          return `<li class="list-group-item d-flex align-items-center">
+                            <span class="me-2">${minute}${extra}</span>
+                            <b class="me-2">${player}</b>
+                            <span class="badge bg-primary">${detail}</span>
+                          </li>`;
+                        }).join('') + '</ul>'
+                      : '<div class="alert alert-info">Không có bàn thắng.</div>';
+
+                    const goalsHtml = `
+                      <div class="row">
+                        <div class="col-6">
+                          <h6 class="text-center">${match.home_team}</h6>
+                          ${renderGoals(homeGoals)}
+                        </div>
+                        <div class="col-6">
+                          <h6 class="text-center">${match.away_team}</h6>
+                          ${renderGoals(awayGoals)}
+                        </div>
+                      </div>
+                    `;
+
+                    const modalHtml = `
+                <div class="row mb-3">
+                  <div class="col-md-4 text-center">
+                    <img src="${match.home_team_logo}" alt="logo" style="height:60px;width:60px;object-fit:contain;"><br>
+                    <b>${match.home_team}</b>
+                  </div>
+                  <div class="col-md-4 text-center">
+                    <div class="mb-2">
+                      <img src="https://media.api-sports.io/football/leagues/" style="height:32px;width:32px;object-fit:contain;display:none;" id="league-logo-modal">
+                    </div>
+                    <div><b>${match.league_name}</b></div>
+                    <div><i class="fa fa-calendar"></i> ${new Date(match.date).toLocaleString()}</div>
+                  </div>
+                  <div class="col-md-4 text-center">
+                    <img src="${match.away_team_logo}" alt="logo" style="height:60px;width:60px;object-fit:contain;"><br>
+                    <b>${match.away_team}</b>
+                  </div>
+                </div>
+                <h5 class="mb-2">Cầu thủ ghi bàn</h5>
+                ${goalsHtml}
+                `;
+                    document.getElementById('match-detail-content').innerHTML = modalHtml;
+                    // Nếu có logo giải đấu, lấy từ match.league_logo nếu có, hoặc ẩn
+                    if (match.league_logo) {
+                      document.getElementById('league-logo-modal').src = match.league_logo;
+                      document.getElementById('league-logo-modal').style.display = '';
+                    } else {
+                      document.getElementById('league-logo-modal').style.display = 'none';
+                    }
+                    new bootstrap.Modal(document.getElementById('matchDetailModal')).show();
+                  })
+                  .catch(() => {
+                    document.getElementById('match-detail-content').innerHTML = '<div class="alert alert-warning">Không thể tải sự kiện trận đấu.</div>';
+                    new bootstrap.Modal(document.getElementById('matchDetailModal')).show();
+                  });
+            });
+        });
+        // Thêm menu context ẩn nếu chưa có
+        if (!document.getElementById('context-menu')) {
+          const menu = document.createElement('ul');
+          menu.id = 'context-menu';
+          menu.style.display = 'none';
+          menu.style.position = 'absolute';
+          menu.style.zIndex = 1000;
+          menu.style.background = '#fff';
+          menu.style.border = '1px solid #ccc';
+          menu.style.listStyle = 'none';
+          menu.style.padding = '5px 0';
+          menu.style.margin = 0;
+          menu.innerHTML = '<li id="delete-row" style="padding:5px 20px; cursor:pointer;">Xóa trận đấu</li>';
+          document.body.appendChild(menu);
+        }
+        let matchIdToDelete = null;
+        // Thay thế context menu và xác nhận xóa bằng modal/toast đẹp
+        function setupDeleteContextMenu() {
+          let currentRow = null;
+          document.querySelectorAll('#prediction-history tr[data-match-id]').forEach(row => {
+            row.addEventListener('contextmenu', function(e) {
+              e.preventDefault();
+              currentRow = this;
+              matchIdToDelete = currentRow.getAttribute('data-match-id');
+              const menu = document.getElementById('context-menu');
+              menu.style.display = 'block';
+              menu.style.left = e.pageX + 'px';
+              menu.style.top = e.pageY + 'px';
+            });
+          });
+          document.getElementById('delete-row').onclick = function() {
+            if (currentRow) {
+              // Hiện modal xác nhận xóa
+              var confirmModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+              confirmModal.show();
+              document.getElementById('context-menu').style.display = 'none';
+            }
+          };
+          // Xử lý khi bấm nút xác nhận xóa trong modal
+          document.getElementById('btn-confirm-delete').onclick = function() {
+            if (currentRow && matchIdToDelete) {
+              let deleted = JSON.parse(localStorage.getItem('deletedPredictions') || '[]');
+              if (!deleted.includes(matchIdToDelete)) {
+                deleted.push(matchIdToDelete);
+                localStorage.setItem('deletedPredictions', JSON.stringify(deleted));
+              }
+              currentRow.remove();
+              // Ẩn modal xác nhận
+              bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+              // Hiện toast thông báo
+              var toast = new bootstrap.Toast(document.getElementById('deleteToast'));
+              toast.show();
+              matchIdToDelete = null;
+            }
+          };
+          document.addEventListener('click', function() {
+            document.getElementById('context-menu').style.display = 'none';
+          });
+        }
+        setupDeleteContextMenu();
+    });
+}
+
+window.removeDeletedPrediction = function(fixtureId) {
+    let deleted = JSON.parse(localStorage.getItem('deletedPredictions') || '[]');
+    deleted = deleted.filter(id => String(id) !== String(fixtureId));
+    localStorage.setItem('deletedPredictions', JSON.stringify(deleted));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadPredictionHistory();
+});
+</script>
+{% endblock %} 

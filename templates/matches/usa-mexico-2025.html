@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán USA vs Mexico - Giao Hữu Quốc Tế 2025</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="match-container">
+        <header>
+            <h1>USA đối đầu Mexico trong trận derby Bắc Mỹ</h1>
+            <p class="timestamp">Cập nhật: 06:44 AM, 10/05/2025</p>
+        </header>
+        <main>
+            <section class="match-overview">
+                <h2>Dự đoán trận đấu</h2>
+                <p><strong>Ngày:</strong> 07/06/2025, 8:00 PM (giờ địa phương)</p>
+                <p><strong>Địa điểm:</strong> Rose Bowl, Pasadena, California, USA</p>
+                <p><strong>Dự đoán tỷ số:</strong> USA 2-1 Mexico</p>
+                <img src="https://static01.nyt.com/images/blogs/goal/posts/12feilheiber.480.jpg" alt="USA vs Mexico" class="match-image">
+            </section>
+            <section class="prediction-analysis">
+                <h2>Phân tích và dự đoán</h2>
+                <h3>Phong độ gần đây</h3>
+                <p><strong>USA:</strong> Đội tuyển Mỹ, dưới sự dẫn dắt của HLV Mauricio Pochettino, đang trẻ hóa đội hình với Christian Pulisic, Weston McKennie, và Folarin Balogun. Họ vô địch CONCACAF Nations League 2024, thắng Mexico 2-0, cho thấy sự tiến bộ ở hàng tiền vệ và khả năng tấn công đa dạng.</p>
+                <p><strong>Mexico:</strong> Mexico, do HLV Javier Aguirre dẫn dắt, đang trong giai đoạn tái thiết. Thất bại trước USA ở Nations League và hòa Ba Lan tại World Cup 2022 cho thấy hàng công thiếu sắc bén, dù thủ môn Guillermo Ochoa vẫn là điểm tựa vững chắc.</p>
+                <h3>Lịch sử đối đầu</h3>
+                <p>USA nhỉnh hơn trong 5 trận gần đây:</p>
+                <ul>
+                    <li>USA thắng 3, Mexico thắng 1, hòa 1.</li>
+                    <li>Trận gần nhất (2024, Nations League): USA thắng 2-0.</li>
+                    <li>USA ghi trung bình 1,6 bàn/trận, Mexico ghi 0,8 bàn/trận.</li>
+                </ul>
+                <h3>Đội hình dự kiến</h3>
+                <p><strong>USA (4-3-3):</strong> Matt Turner; Sergiño Dest, Chris Richards, Tim Ream, Antonee Robinson; Weston McKennie, Tyler Adams, Gio Reyna; Christian Pulisic (C), Folarin Balogun, Timothy Weah.</p>
+                <p><strong>Mexico (4-2-3-1):</strong> Guillermo Ochoa; Jorge Sánchez, César Montes, Johan Vásquez, Jesús Gallardo; Edson Álvarez, Luis Chávez; Hirving Lozano, Orbelín Pineda, Alexis Vega; Santiago Giménez.</p>
+                <h3>Cầu thủ đáng chú ý</h3>
+                <p><strong>USA - Christian Pulisic:</strong> Tiền đạo Chelsea là linh hồn của USA, với khả năng đi bóng, sút xa, và kiến tạo. Anh ghi bàn quyết định trong trận thắng Mexico 2024.</p>
+                <p><strong>Mexico - Guillermo Ochoa:</strong> Thủ môn 40 tuổi vẫn là bức tường vững chắc, nổi tiếng với các pha cứu thua penalty (như trước Lewandowski tại World Cup 2022).</p>
+                <h3>Yếu tố chiến thuật</h3>
+                <p><strong>USA:</strong> Sơ đồ 4-3-3 với pressing tầm cao và tấn công cánh qua Pulisic và Weah. Hàng tiền vệ McKennie-Adams-Reyna sẽ kiểm soát khu trung tuyến.</p>
+                <p><strong>Mexico:</strong> Sơ đồ 4-2-3-1 tập trung vào phòng ngự chắc chắn với Álvarez-Chávez ở trung tâm. Lozano và Giménez sẽ phản công nhanh, nhưng thiếu sự ổn định.</p>
+                <h3>Lý do dự đoán</h3>
+                <p>USA được dự đoán thắng 2-1 vì:</p>
+                <ul>
+                    <li>Phong độ vượt trội, đặc biệt sau chiến thắng 2-0 trước Mexico ở Nations League 2024.</li>
+                    <li>Hàng tiền vệ và tấn công đa dạng hơn với Pulisic, Balogun, và Reyna.</li>
+                    <li>Mexico phụ thuộc vào Ochoa, nhưng hàng công thiếu sắc bén trước hàng thủ tổ chức tốt của USA.</li>
+                </ul>
+            </section>
+            <section class="related-articles">
+                <h2>Bài viết liên quan</h2>
+                <ul>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='hungary-sweden-2025') }}">Hungary có cơ hội trả nợ Thụy Điển</a></li>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='spain-france-2025') }}">Spain đối đầu France trong trận giao hữu</a></li>
+                </ul>
+            </section>
+        </main>
+        <footer>
+            <a href="{{ url_for('news.news') }}">Quay lại Trang Chủ</a>
+        </footer>
+    </div>
+</body>
+</html>

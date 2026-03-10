@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Tin tức bóng đá{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='news_layout.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="news-page-wrapper">
+    <!-- ========== HEADER (DE style) ========== -->
+    <header class="header news-header">
+        <div class="header-container">
+            <div class="logo" onclick="goHome()">
+                <span class="logo-icon">⚽</span>
+                <span class="logo-text">FOOTBALL<span class="logo-accent">NEWS</span></span>
+            </div>
+
+            <nav class="main-nav">
+                <a href="#" class="nav-link active" data-league="all">Trang Chủ</a>
+                <a href="#" class="nav-link" data-league="premier-league">Premier League</a>
+                <a href="#" class="nav-link" data-league="la-liga">La Liga</a>
+                <a href="#" class="nav-link" data-league="serie-a">Serie A</a>
+                <a href="#" class="nav-link" data-league="bundesliga">Bundesliga</a>
+                <a href="#" class="nav-link" data-league="champions-league">Champions League</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="league-bar">
+        <div class="league-bar-container">
+            <button class="league-chip active" data-league="all" onclick="filterByLeague('all')">
+                <span class="chip-icon">🏆</span> Tất cả
+            </button>
+            <button class="league-chip" data-league="premier-league" onclick="filterByLeague('premier-league')">
+                <span class="chip-dot" style="background: #38003c"></span> Premier League
+            </button>
+            <button class="league-chip" data-league="la-liga" onclick="filterByLeague('la-liga')">
+                <span class="chip-dot" style="background: #ee2737"></span> La Liga
+            </button>
+            <button class="league-chip" data-league="serie-a" onclick="filterByLeague('serie-a')">
+                <span class="chip-dot" style="background: #024494"></span> Serie A
+            </button>
+            <button class="league-chip" data-league="bundesliga" onclick="filterByLeague('bundesliga')">
+                <span class="chip-dot" style="background: #cf0a2c"></span> Bundesliga
+            </button>
+            <button class="league-chip" data-league="champions-league" onclick="filterByLeague('champions-league')">
+                <span class="chip-dot" style="background: #071c4d"></span> Champions League
+            </button>
+
+            <!-- Search + Refresh (DE style) -->
+            <div class="search-refresh-group">
+                <div class="search-box" style="position:relative;">
+                    <input id="search-input" class="search-input" type="text" placeholder="Tìm kiếm tin tức..."
+                        oninput="searchNews(this.value)" onkeydown="handleSearchKey(event)"
+                        onfocus="if(this.value.trim()) searchNews(this.value)">
+                    <button class="search-btn" onclick="clearSearch()" title="Xóa tìm kiếm"></button>
+                    <div id="search-dropdown" class="search-dropdown" style="display:none;"></div>
+                </div>
+                <button class="refresh-btn" onclick="loadNews(true)" title="Làm mới">
+                    <span class="refresh-icon">↻</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-container news-main">
+        <div class="content-area">
+            <div id="loading-state" class="loading-state">
+                <div class="loader"></div>
+                <p>Đang tải tin tức...</p>
+            </div>
+
+            <div id="news-list-view">
+                <section id="hero-section" class="hero-section" style="display: none;"></section>
+                <section id="news-section" class="news-section" style="display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title">TIN MỚI NHẤT</h2>
+                        <span class="section-line"></span>
+                    </div>
+                    <div id="news-grid" class="news-grid"></div>
+                </section>
+            </div>
+
+            <div id="article-detail-view" class="article-detail-view" style="display: none;">
+                <button class="back-btn" onclick="goBack()">
+                    <span>←</span> Quay lại
+                </button>
+                <article id="article-content" class="article-content"></article>
+            </div>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="empty-icon">📭</div>
+                <h3>Không có tin tức</h3>
+                <p>Không tìm thấy tin tức cho giải đấu này. Bạn có thể cấu hình RSS trong config (RSS_NEWS_URLS) hoặc thử lại sau.</p>
+                <button onclick="loadNews(true)" class="btn-primary">Thử lại</button>
+            </div>
+        </div>
+
+        <aside class="sidebar news-sidebar">
+            <div class="sidebar-card">
+                <div class="sidebar-header">
+                    <span class="sidebar-icon">🔥</span>
+                    <h3>TIN NỔI BẬT</h3>
+                </div>
+                <div id="trending-list" class="trending-list"></div>
+            </div>
+            <div class="sidebar-card">
+                <div class="sidebar-header">
+                    <span class="sidebar-icon">⚡</span>
+                    <h3>GIẢI ĐẤU</h3>
+                </div>
+                <div class="quick-links">
+                    <a href="#" class="quick-link" onclick="filterByLeague('premier-league'); return false;">
+                        <span class="link-badge premier">PL</span>
+                        <span>Premier League</span>
+                    </a>
+                    <a href="#" class="quick-link" onclick="filterByLeague('la-liga'); return false;">
+                        <span class="link-badge laliga">LL</span>
+                        <span>La Liga</span>
+                    </a>
+                    <a href="#" class="quick-link" onclick="filterByLeague('serie-a'); return false;">
+                        <span class="link-badge seriea">SA</span>
+                        <span>Serie A</span>
+                    </a>
+                    <a href="#" class="quick-link" onclick="filterByLeague('bundesliga'); return false;">
+                        <span class="link-badge bundes">BL</span>
+                        <span>Bundesliga</span>
+                    </a>
+                    <a href="#" class="quick-link" onclick="filterByLeague('champions-league'); return false;">
+                        <span class="link-badge ucl">UCL</span>
+                        <span>Champions League</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='news.js') }}"></script>
+{% endblock %}

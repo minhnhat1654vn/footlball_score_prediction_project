@@ -1,0 +1,770 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* Header Banner */
+    .header-banner {
+        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    /* League Section */
+    .league-section {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .league-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .league-logo {
+        width: 32px;
+        height: 32px;
+        margin-right: 10px;
+    }
+
+    .league-name {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* Match Card */
+    .match-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid #eee;
+    }
+
+    .match-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .match-time {
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .match-teams {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .team {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .team-logo {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }
+
+    .team-name {
+        font-weight: 500;
+    }
+
+    .vs-badge {
+        background: #f0f0f0;
+        color: #666;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.9em;
+    }
+
+    /* Filters */
+    .filters-section {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .filter-group {
+        margin-bottom: 15px;
+    }
+
+    .filter-label {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    /* Loading Skeleton */
+    .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    .skeleton-card {
+        height: 100px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    /* Dark Mode */
+    body.darkmode .league-section,
+    body.darkmode .match-card,
+    body.darkmode .filters-section {
+        background: #23272f;
+        color: #f1f1f1;
+    }
+
+    body.darkmode .league-header {
+        border-bottom-color: #444;
+    }
+
+    body.darkmode .vs-badge {
+        background: #444;
+        color: #f1f1f1;
+    }
+
+    body.darkmode .match-time {
+        color: #aaa;
+    }
+
+    /* Loading */
+    .loading {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    /* Prediction Modal */
+    .prediction-modal .modal-content {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .prediction-modal .modal-header {
+        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        border: none;
+    }
+
+    .prediction-modal .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .team-logo {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+
+    .team-logo:hover {
+        transform: scale(1.1);
+    }
+
+    .progress {
+        height: 25px;
+        border-radius: 12px;
+        background-color: #f0f0f0;
+        margin: 10px 0;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        transition: width 1s ease-in-out;
+        font-weight: 600;
+        font-size: 0.9em;
+        line-height: 25px;
+    }
+
+    .prediction-result {
+        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+        text-align: center;
+        font-size: 1.2em;
+        box-shadow: 0 4px 15px rgba(30,60,114,0.2);
+    }
+
+    .match-info {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .score-prediction {
+        font-size: 2em;
+        font-weight: 700;
+        color: #1e3c72;
+        text-align: center;
+        margin: 20px 0;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .team-name {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #333;
+        margin-top: 10px;
+    }
+
+    .vs-badge {
+        background: #1e3c72;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9em;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .prediction-modal .modal-content {
+        animation: fadeIn 0.5s ease-out;
+    }
+    .container {
+        margin-top:10vh;
+    }
+
+    body.darkmode .prediction-box,
+    body.darkmode .match-card {
+        background: #23272f !important;
+        color: #f1f1f1 !important;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.13);
+    }
+    body.darkmode .match-card:hover {
+        box-shadow: 0 4px 16px rgba(30,60,114,0.18);
+    }
+    body.darkmode .history-table {
+        background: #23272b !important;
+        color: #e0e0e0 !important;
+    }
+    body.darkmode .history-table th,
+    body.darkmode .history-table td {
+        color: #e0e0e0 !important;
+        border-color: #444 !important;
+    }
+    body.darkmode .history-table tr:nth-child(even) {
+        background: #23272b !important;
+    }
+    body.darkmode .history-table tr:hover {
+        background: #23272f !important;
+    }
+    body.darkmode .score-pred,
+    body.darkmode .score-real {
+        color: #f7b731 !important;
+    }
+    body.darkmode .btn,
+    body.darkmode .btn-primary {
+        background: #1e3c72 !important;
+        color: #fff !important;
+        border: none;
+    }
+
+    .horizontal-date-picker {
+        display: flex;
+        overflow-x: auto;
+        gap: 12px;
+        padding: 8px 0;
+        justify-content: center;
+    }
+    .date-btn {
+        min-width: 90px;
+        padding: 10px 0;
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        background: #fff;
+        color: #222;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, border 0.2s;
+        font-size: 1em;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .date-btn.active, .date-btn:focus {
+        background: #fff;
+        color: #1e3c72;
+        border: 2px solid #1e3c72;
+        font-weight: 700;
+        outline: none;
+    }
+    .arrow-btn {
+        background: none;
+        border: none;
+        font-size: 1.3em;
+        color: #444;
+        padding: 0 8px;
+        cursor: pointer;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+    .arrow-btn:hover {
+        background: #f0f0f0;
+    }
+    body.darkmode .date-btn {
+        background: #23272f !important;
+        color: #fff !important;
+        border: 2px solid #444 !important;
+    }
+    body.darkmode .date-btn.active,
+    body.darkmode .date-btn:focus,
+    body.darkmode .date-btn:hover {
+        background: #23272f !important;
+        color: #f7b731 !important;
+        border: 2px solid #f7b731 !important;
+    }
+    body.darkmode .arrow-btn {
+        color: #ccc;
+    }
+    body.darkmode .arrow-btn:hover {
+        background: #23272b;
+    }
+    /* Đảm bảo tên giải đấu và tên đội bóng luôn màu trắng ở dark mode */
+    body.darkmode .league-name,
+    body.darkmode .team-name,
+    body.darkmode .match-card .team-name,
+    body.darkmode .league-header .league-name {
+        color: #fff !important;
+    }
+    body.darkmode .league-header {
+        color: #fff !important;
+    }
+    body.darkmode .match-card {
+        color: #fff !important;
+    }
+
+    .prediction-modal .modal-dialog {
+    margin-top: 10vh !important;
+}
+
+.prediction-modal .match-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+body.darkmode .prediction-modal .match-info {
+    background: #23272f !important;
+    color: #f1f1f1 !important;
+    border: 1px solid #444 !important;
+}
+
+body.darkmode .prediction-modal .team-name {
+    color: #f7b731 !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="date-picker-bar" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                <button class="arrow-btn" id="date-prev"><i class="fa fa-chevron-left"></i></button>
+                <div class="horizontal-date-picker" id="horizontal-date-picker"></div>
+                <button class="arrow-btn" id="date-next"><i class="fa fa-chevron-right"></i></button>
+                <input type="date" class="form-control" id="date" style="display:none;width:140px;min-width:unset;">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label class="filter-label">🏆 Giải đấu</label>
+                    <select class="form-select" id="league-filter">
+                        <option value="">Tất cả giải đấu</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">🔍 Tìm kiếm</label>
+                    <input type="text" class="form-control" id="search-input" placeholder="Tìm theo tên đội...">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div id="matches-container">
+                <!-- Matches will be loaded here -->
+            </div>
+            <div id="loading" class="loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Prediction Modal -->
+<div class="modal fade prediction-modal" id="predictionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Dự đoán kết quả</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="prediction-content">
+                    <!-- Prediction content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Leagues Data
+const leagues = {{ leagues|tojson|safe }};
+
+// Set default date to today
+document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+        dateInput.valueAsDate = new Date();
+        dateInput.addEventListener('change', loadMatches);
+        loadMatches(); // Load matches on page load
+    }
+
+    // Setup league filter
+    const leagueFilter = document.getElementById('league-filter');
+    Object.entries(leagues).forEach(([id, name]) => {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = name;
+        leagueFilter.appendChild(option);
+    });
+    leagueFilter.addEventListener('change', loadMatches);
+
+    // Setup search
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', loadMatches);
+});
+
+function loadMatches() {
+    const date = document.getElementById('date').value;
+    const leagueId = document.getElementById('league-filter').value;
+    const searchQuery = document.getElementById('search-input').value.toLowerCase();
+    const loading = document.getElementById('loading');
+    const matchesContainer = document.getElementById('matches-container');
+
+    loading.style.display = 'block';
+    matchesContainer.innerHTML = '';
+
+    // Show loading skeleton
+    for (let i = 0; i < 3; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'skeleton skeleton-card';
+        matchesContainer.appendChild(skeleton);
+    }
+
+    fetch('/get_fixtures', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ date: date })
+    })
+    .then(response => response.json())
+    .then(data => {
+        loading.style.display = 'none';
+        matchesContainer.innerHTML = '';
+        
+        if (data.response && data.response.length > 0) {
+            // Filter matches based on league and search
+            const filteredMatches = data.response.filter(match => {
+                const matchLeagueId = String(match.league.id); // Convert to string for comparison
+                const homeTeam = match.teams.home.name.toLowerCase();
+                const awayTeam = match.teams.away.name.toLowerCase();
+                
+                // If no league is selected (empty string), show all matches
+                const leagueMatch = leagueId === '' || matchLeagueId === leagueId;
+                const searchMatch = !searchQuery || homeTeam.includes(searchQuery) || awayTeam.includes(searchQuery);
+                
+                return leagueMatch && searchMatch;
+            });
+
+            if (filteredMatches.length === 0) {
+                matchesContainer.innerHTML = '<div class="alert alert-warning">Không tìm thấy trận đấu nào phù hợp với bộ lọc!</div>';
+                return;
+            }
+
+            displayMatches(filteredMatches);
+        } else {
+            matchesContainer.innerHTML = '<div class="alert alert-warning">Không có trận đấu nào trong ngày này!</div>';
+        }
+    })
+    .catch(error => {
+        loading.style.display = 'none';
+        matchesContainer.innerHTML = '<div class="alert alert-danger">Có lỗi xảy ra khi tải dữ liệu!</div>';
+        console.error('Error:', error);
+    });
+}
+
+function displayMatches(matches) {
+    const matchesContainer = document.getElementById('matches-container');
+
+    // Group matches by league
+    const matchesByLeague = {};
+    matches.forEach(match => {
+        const leagueId = match.league.id;
+        if (leagues[leagueId]) {
+            if (!matchesByLeague[leagueId]) {
+                matchesByLeague[leagueId] = {
+                    name: leagues[leagueId],
+                    logo: match.league.logo,
+                    matches: []
+                };
+            }
+            matchesByLeague[leagueId].matches.push(match);
+        }
+    });
+
+    // Display matches
+    for (const [leagueId, leagueData] of Object.entries(matchesByLeague)) {
+        const leagueDiv = document.createElement('div');
+        leagueDiv.className = 'league-section';
+        leagueDiv.innerHTML = `
+            <div class="league-header">
+                <img src="${leagueData.logo}" alt="logo" class="league-logo">
+                <span class="league-name">${leagueData.name}</span>
+            </div>
+            <div class="league-matches"></div>
+        `;
+
+        leagueData.matches.forEach(match => {
+            const matchDiv = document.createElement('div');
+            matchDiv.className = 'match-card';
+            matchDiv.innerHTML = `
+                <div class="match-time">
+                    ${new Date(match.fixture.date).toLocaleTimeString()}
+                </div>
+                <div class="match-teams">
+                    <div class="team">
+                        <img src="${match.teams.home.logo}" alt="logo" class="team-logo">
+                        <span class="team-name">${match.teams.home.name}</span>
+                    </div>
+                    <span class="vs-badge">VS</span>
+                    <div class="team">
+                        <img src="${match.teams.away.logo}" alt="logo" class="team-logo">
+                        <span class="team-name">${match.teams.away.name}</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="getPrediction(${match.fixture.id})">
+                        Xem dự đoán
+                    </button>
+                </div>
+            `;
+            leagueDiv.querySelector('.league-matches').appendChild(matchDiv);
+        });
+
+        matchesContainer.appendChild(leagueDiv);
+    }
+}
+
+function getPrediction(fixtureId) {
+    const loading = document.getElementById('loading');
+    const predictionContent = document.getElementById('prediction-content');
+
+    loading.style.display = 'block';
+    predictionContent.innerHTML = '';
+
+    fetch('/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ fixture_id: fixtureId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        loading.style.display = 'none';
+        if (window.removeDeletedPrediction) window.removeDeletedPrediction(fixtureId);
+        if (data.error) {
+            predictionContent.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        } else {
+            const match = data.match;
+            let homeName = match ? match.teams.home.name : (data.home_team || 'Đội nhà');
+            let awayName = match ? match.teams.away.name : (data.away_team || 'Đội khách');
+            let homeLogo = match ? match.teams.home.logo : (data.home_team_logo || '');
+            let awayLogo = match ? match.teams.away.logo : (data.away_team_logo || '');
+            let matchDate = match ? match.fixture.date : (data.date || '');
+            let leagueName = match ? match.league.name : (data.league_name || '');
+            // Xác định kết quả dự đoán
+            let resultText = '';
+            if (data.home_win_prob >= data.draw_prob && data.home_win_prob >= data.away_win_prob) {
+                resultText = `${homeName} thắng ${awayName}`;
+            } else if (data.draw_prob >= data.home_win_prob && data.draw_prob >= data.away_win_prob) {
+                resultText = `${homeName} hòa ${awayName}`;
+            } else {
+                resultText = `${homeName} thua ${awayName}`;
+            }
+            let html = `
+                <div class="prediction-box">
+                    <div class="text-center mb-4">
+                        <div class="match-info">
+                            <i class="fas fa-calendar-alt"></i> ${matchDate ? new Date(matchDate).toLocaleString() : ''}
+                            <br>
+                            <i class="fas fa-trophy"></i> ${leagueName}
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center gap-4 mb-3">
+                            <div class="text-center">
+                                <img src="${homeLogo}" alt="logo" class="team-logo">
+                                <div class="team-name">${homeName}</div>
+                            </div>
+                            <div class="vs-badge">VS</div>
+                            <div class="text-center">
+                                <img src="${awayLogo}" alt="logo" class="team-logo">
+                                <div class="team-name">${awayName}</div>
+                            </div>
+                        </div>
+                        <div class="prediction-result">
+                            <i class="fas fa-chart-line"></i> Dự đoán: <strong>${resultText}</strong>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-4 text-center">
+                            <h5><i class="fas fa-trophy text-success"></i> Thắng</h5>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: 0%" data-width="${data.home_win_prob * 100}">
+                                    ${(data.home_win_prob * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h5><i class="fas fa-handshake text-warning"></i> Hòa</h5>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                     style="width: 0%" data-width="${data.draw_prob * 100}">
+                                    ${(data.draw_prob * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h5><i class="fas fa-trophy text-danger"></i> Thắng</h5>
+                            <div class="progress">
+                                <div class="progress-bar bg-danger" role="progressbar" 
+                                     style="width: 0%" data-width="${data.away_win_prob * 100}">
+                                    ${(data.away_win_prob * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            predictionContent.innerHTML = html;
+            // Animate progress bars after modal is shown
+            setTimeout(() => {
+                document.querySelectorAll('.progress-bar').forEach(bar => {
+                    const width = bar.getAttribute('data-width');
+                    bar.style.width = width + '%';
+                });
+            }, 100);
+        }
+        new bootstrap.Modal(document.getElementById('predictionModal')).show();
+        if (typeof loadPredictionHistory === 'function') loadPredictionHistory();
+    })
+    .catch(error => {
+        loading.style.display = 'none';
+        predictionContent.innerHTML = '<div class="alert alert-danger">Có lỗi xảy ra khi tạo dự đoán!</div>';
+        console.error('Error:', error);
+    });
+}
+
+let dateOffset = 0; // Số ngày offset so với hôm nay (0 là hôm nay)
+const RANGE = 7; // Số ngày hiển thị mỗi lần
+
+// Trả về YYYY-MM-DD theo giờ địa phương (tránh lệch do toISOString() dùng UTC)
+function toLocalDateString(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+}
+
+function renderHorizontalDatePicker() {
+    const picker = document.getElementById('horizontal-date-picker');
+    picker.innerHTML = '';
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const weekdays = ['CN', 'Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6', 'Th 7'];
+    for (let i = -1 + dateOffset; i < RANGE + dateOffset; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + i);
+        const btn = document.createElement('button');
+        btn.className = 'date-btn';
+        if (i === 0) btn.textContent = 'Hôm nay';
+        else if (i === -1) btn.textContent = 'Hôm qua';
+        else if (i === 1) btn.textContent = 'Ngày mai';
+        else {
+            const weekday = weekdays[d.getDay()];
+            btn.textContent = `${weekday}, ${d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}`;
+        }
+        btn.dataset.date = toLocalDateString(d);
+        if (document.getElementById('date').value === btn.dataset.date) btn.classList.add('active');
+        btn.onclick = function() {
+            document.getElementById('date').value = btn.dataset.date;
+            document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadMatches();
+        };
+        picker.appendChild(btn);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderHorizontalDatePicker();
+    document.getElementById('date-prev').onclick = function() {
+        dateOffset -= RANGE;
+        renderHorizontalDatePicker();
+    };
+    document.getElementById('date-next').onclick = function() {
+        dateOffset += RANGE;
+        renderHorizontalDatePicker();
+    };
+    document.getElementById('date').onchange = function() {
+        renderHorizontalDatePicker();
+        loadMatches();
+        this.style.display = 'none';
+    };
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán Fulham vs Liverpool - Premier League 2025/26</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="match-container">
+        <header>
+            <h1>Fulham đối đầu Liverpool tại Craven Cottage</h1>
+            <p class="timestamp">Cập nhật: 08:30 AM, 12/05/2025</p>
+        </header>
+        <main>
+            <section class="match-overview">
+                <h2>Dự đoán trận đấu</h2>
+                <p><strong>Ngày:</strong> 20/12/2025, 3:00 PM (giờ địa phương)</p>
+                <p><strong>Địa điểm:</strong> Craven Cottage, London, Anh</p>
+                <p><strong>Dự đoán tỷ số:</strong> Fulham 1-3 Liverpool</p>
+                <img src="https://i.guim.co.uk/img/media/8c8a7806f4a27f2209dc76cc99482778889a84c0/0_0_3000_2153/master/3000.jpg?width=465&dpr=1&s=none&crop=none" alt="Fulham vs Liverpool" class="match-image">
+            </section>
+            <section class="prediction-analysis">
+                <h2>Phân tích và dự đoán</h2>
+                <h3>Phong độ gần đây</h3>
+                <p><strong>Fulham:</strong> Fulham có lối chơi tổ chức dưới sự dẫn dắt của Marco Silva, nhưng chỉ thắng 3/7 trận sân nhà mùa này. Rodrigo Muniz và Emile Smith Rowe là mũi nhọn.</p>
+                <p><strong>Liverpool:</strong> Liverpool dẫn đầu Premier League với chuỗi 8 trận bất bại. Mohamed Salah và Darwin Núñez dẫn dắt hàng công, với hàng thủ chắc chắn của Virgil van Dijk.</p>
+                <h3>Lịch sử đối đầu</h3>
+                <p>Liverpool áp đảo:</p>
+                <ul>
+                    <li>Premier League 2024/25: Liverpool thắng 3-1 (khách), 2-0 (nhà).</li>
+                    <li>Premier League 2023/24: Liverpool thắng 4-1 (khách), 2-1 (nhà).</li>
+                </ul>
+                <h3>Đội hình dự kiến</h3>
+                <p><strong>Fulham (4-2-3-1):</strong> Bernd Leno; Timothy Castagne, Joachim Andersen, Calvin Bassey, Antonee Robinson; Andreas Pereira, Saša Lukić; Reiss Nelson, Emile Smith Rowe, Alex Iwobi; Rodrigo Muniz.</p>
+                <p><strong>Liverpool (4-3-3):</strong> Alisson; Trent Alexander-Arnold, Ibrahima Konaté, Virgil van Dijk, Andrew Robertson; Dominik Szoboszlai, Ryan Gravenberch, Alexis Mac Allister; Mohamed Salah, Darwin Núñez, Luis Díaz.</p>
+                <h3>Cầu thủ đáng chú ý</h3>
+                <p><strong>Fulham - Emile Smith Rowe:</strong> Tiền vệ Anh với khả năng sáng tạo, là mối nguy hiểm trong các pha phối hợp.</p>
+                <p><strong>Liverpool - Mohamed Salah:</strong> Tiền đạo Ai Cập ghi 12 bàn mùa này, là mũi nhọn không thể ngăn cản.</p>
+                <h3>Yếu tố chiến thuật</h3>
+                <p><strong>Fulham:</strong> Sơ đồ 4-2-3-1 với phòng ngự số đông và phản công qua Smith Rowe-Muniz. Lợi thế sân nhà sẽ tạo áp lực.</p>
+                <p><strong>Liverpool:</strong> Sơ đồ 4-3-3 với pressing tầm cao và tấn công cánh qua Salah-Díaz. Van Dijk sẽ khóa chặt Muniz.</p>
+                <h3>Lý do dự đoán</h3>
+                <p>Liverpool được dự đoán thắng 3-1 vì:</p>
+                <ul>
+                    <li>Lịch sử đối đầu áp đảo, thắng 5/5 trận gần đây.</li>
+                    <li>Phong độ vượt trội với Salah và Núñez dẫn dắt hàng công.</li>
+                    <li>Fulham có Smith Rowe nguy hiểm, nhưng hàng thủ yếu khó cản Liverpool.</li>
+                </ul>
+            </section>
+            <section class="related-articles">
+                <h2>Bài viết liên quan</h2>
+                <ul>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='chelsea-newcastle-2025') }}">Chelsea đối đầu Newcastle tại Stamford Bridge</a></li>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='man-united-everton-2025') }}">Manchester United chạm trán Everton tại Old Trafford</a></li>
+                </ul>
+            </section>
+        </main>
+        <footer>
+            <a href="{{ url_for('news.news') }}">Quay lại Trang Chủ</a>
+        </footer>
+    </div>
+</body>
+</html>

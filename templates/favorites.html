@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    /* Header Banner */
+    .header-banner {
+        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    /* Filter Section */
+    .filter-section {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-section select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .filter-section .team-checkboxes {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 10px;
+    }
+
+    .filter-section .team-checkbox {
+        display: block;
+        margin: 5px 0;
+    }
+
+    /* Team Card */
+    .team-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+        text-align: center;
+        position: relative;
+    }
+
+    .team-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .team-card .team-logo {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        margin-bottom: 15px;
+        background-color: #f8f9fa;
+        border-radius: 50%;
+        padding: 10px;
+    }
+
+    .team-card .team-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #1e3c72;
+    }
+
+    .team-card .team-league {
+        color: #666;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+
+    .team-card .team-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .team-card .stat-item {
+        text-align: center;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+
+    .team-card .stat-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e3c72;
+    }
+
+    .team-card .stat-label {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    .team-card .team-info {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        text-align: left;
+    }
+
+    .team-card .info-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+    }
+
+    .team-card .info-label {
+        color: #666;
+    }
+
+    .team-card .info-value {
+        font-weight: 500;
+        color: #1e3c72;
+    }
+
+    .container {
+        margin-top: 10vh; 
+    }
+
+    .no-teams-message {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+    }
+
+    /* Remove Button */
+    .remove-team {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
+    }
+
+    .remove-team:hover {
+        background: #cc0000;
+    }
+
+    /* League Badge */
+    .league-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #1e3c72;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+    }
+
+    /* League Select Styling */
+    .league-select {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        background-color: white;
+    }
+
+    .league-select img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        object-fit: contain;
+    }
+
+    .league-select select {
+        flex: 1;
+        border: none;
+        padding: 8px;
+        background: transparent;
+    }
+
+    .league-select select:focus {
+        outline: none;
+    }
+
+    body.darkmode .team-card {
+        background-color: #23272f !important;
+        color: #f1f1f1 !important;
+        border: 1px solid #353b48;
+    }
+    body.darkmode .team-card .team-name,
+    body.darkmode .team-card .stat-value,
+    body.darkmode .team-card .info-value {
+        color: #f1f1f1 !important;
+    }
+    body.darkmode .team-card .team-league,
+    body.darkmode .team-card .stat-label,
+    body.darkmode .team-card .info-label {
+        color: #aaa !important;
+    }
+    body.darkmode .team-card .team-stats {
+        background-color: #181a1b !important;
+        border-top: 1px solid #23272f !important;
+    }
+    body.darkmode .remove-team {
+        background: #e74c3c !important;
+        color: #fff !important;
+    }
+    body.darkmode .remove-team:hover {
+        background: #c0392b !important;
+    }
+    body.darkmode .league-badge {
+        background: #353b48 !important;
+        color: #f1f1f1 !important;
+    }
+    body.darkmode .team-card .stat-item {
+        background-color: #23272f !important;
+        color: #f1f1f1 !important;
+    }
+    body.darkmode .team-card .team-info {
+        background-color: #23272f !important;
+        color: #f1f1f1 !important;
+    }
+
+    body.darkmode .filter-section,
+    body.darkmode .team-card,
+    body.darkmode .team-card .stat-item,
+    body.darkmode .team-card .team-info {
+        background-color: #181a1b !important;
+        color: #f1f1f1 !important;
+        border: 1px solid #23272f !important;
+    }
+    body.darkmode .filter-section select,
+    body.darkmode .filter-section .league-select,
+    body.darkmode .filter-section .team-checkboxes {
+        background-color: #181a1b !important;
+        color: #f1f1f1 !important;
+        border: 1px solid #23272f !important;
+    }
+    body.darkmode .filter-section option {
+        background-color: #181a1b !important;
+        color: #f1f1f1 !important;
+    }
+    body.darkmode .filter-section label {
+        color: #f1f1f1 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ===== FAVORITES TAB SECTION ===== -->
+<div id="favorites" class="tab-content active">
+    
+    <div class="container">
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h4>Bộ lọc</h4>
+            <form method="POST" action="{{ url_for('favorites.favorites') }}">
+                <input type="hidden" name="action" value="add">
+                <div class="league-select">
+                    <img src="{{ url_for('static', filename='images/leagues/' ~ selected_league ~ '.png') }}" 
+                         alt="League Logo" 
+                         onerror="this.src='{{ url_for('static', filename='images/leagues/default.png') }}'">
+                    <select name="league" class="form-control" onchange="this.form.submit()">
+                        <option value="">Chọn giải đấu</option>
+                        <option value="premier-league" {% if selected_league == 'premier-league' %}selected{% endif %}>Premier League</option>
+                        <option value="la-liga" {% if selected_league == 'la-liga' %}selected{% endif %}>La Liga</option>
+                        <option value="bundesliga" {% if selected_league == 'bundesliga' %}selected{% endif %}>Bundesliga</option>
+                        <option value="serie-a" {% if selected_league == 'serie-a' %}selected{% endif %}>Serie A</option>
+                        <option value="ligue-1" {% if selected_league == 'ligue-1' %}selected{% endif %}>Ligue 1</option>
+                    </select>
+                </div>
+            </form>
+
+            {% if selected_league %}
+            <form method="POST" action="{{ url_for('favorites.favorites') }}">
+                <input type="hidden" name="action" value="add">
+                <input type="hidden" name="league" value="{{ selected_league }}">
+                <div class="team-checkboxes">
+                    {% for team in teams %}
+                    <div class="team-checkbox">
+                        <input type="checkbox" name="selected_teams" value="{{ team.name }}" 
+                               id="{{ team.image }}" {% if team.name in selected_teams|map(attribute='name') %}checked{% endif %}>
+                        <label for="{{ team.image }}">{{ team.name }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Thêm vào yêu thích</button>
+            </form>
+            {% endif %}
+        </div>
+
+        <!-- Favorites Grid -->
+        <div class="row">
+            {% if selected_teams %}
+                {% for team in selected_teams %}
+                <div class="col-md-4">
+                    <div class="team-card">
+                        <form method="POST" action="{{ url_for('favorites.favorites') }}" style="display: inline;">
+                            <input type="hidden" name="action" value="remove">
+                            <input type="hidden" name="team_name" value="{{ team.name }}">
+                            <button type="submit" class="remove-team" title="Xóa khỏi yêu thích">&times;</button>
+                        </form>
+                        <span class="league-badge">{{ team.league }}</span>
+                        <img class="team-logo" 
+                             src="{{ team.logo_url or url_for('static', filename='images/teams/' ~ team.image ~ '.png') }}" 
+                             alt="{{ team.name }}" 
+                             onerror="this.src='{{ url_for('static', filename='images/teams/default.png') }}'">
+                        <div class="team-name">{{ team.name }}</div>
+                        
+                        <!-- Team Stats -->
+                        <div class="team-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ team.stats.wins|default(0) }}</div>
+                                <div class="stat-label">Thắng</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">{{ team.stats.draws|default(0) }}</div>
+                                <div class="stat-label">Hòa</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">{{ team.stats.losses|default(0) }}</div>
+                                <div class="stat-label">Thua</div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Team Info -->
+                        <div class="team-info">
+                            <div class="info-item">
+                                <span class="info-label">Xếp hạng:</span>
+                                <span class="info-value">{{ team.stats.rank|default('N/A') }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Điểm:</span>
+                                <span class="info-value">{{ team.stats.points|default(0) }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Bàn thắng:</span>
+                                <span class="info-value">{{ team.stats.goals_for|default(0) }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Bàn thua:</span>
+                                <span class="info-value">{{ team.stats.goals_against|default(0) }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Hiệu số:</span>
+                                <span class="info-value">{{ team.stats.goal_diff|default(0) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="no-teams-message">
+                        <p>Chưa có câu lạc bộ nào được chọn</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

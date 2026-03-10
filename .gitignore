@@ -1,0 +1,48 @@
+# Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc.*
+*.29322*
+
+# Virtual env
+venv/
+.venv/
+env/
+.env
+.env.local
+
+venv/
+__pycache__/
+*.sqlite
+*.db
+.env
+
+# Cache (runtime)
+cache/
+permanent_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+database.sqlite
+*.sqlite
+venv/
+__pycache__/
+
+# Model / data (optional: uncomment if you don't want to commit large files)
+# *.pkl
+# database.sqlite
+# Datasets/*.csv
+# *.zip

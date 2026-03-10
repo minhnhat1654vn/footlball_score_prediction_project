@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán Everton vs Bournemouth - Vòng 5 FA Cup 2024/25</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="match-container">
+        <header>
+            <h1>Everton chạm trán Bournemouth tại vòng 5 FA Cup</h1>
+            <p class="timestamp">Cập nhật: 08:30 AM, 12/05/2025</p>
+        </header>
+        <main>
+            <section class="match-overview">
+                <h2>Dự đoán trận đấu</h2>
+                <p><strong>Ngày:</strong> 26/02/2025, 7:45 PM (giờ địa phương)</p>
+                <p><strong>Địa điểm:</strong> Goodison Park, Liverpool, Anh</p>
+                <p><strong>Dự đoán tỷ số:</strong> Everton 1-0 Bournemouth</p>
+                <img src="https://www.ligaolahraga.com/storage/images/news/2025/01/04/bournemouth-vs-everton-di-premier-league-kabar-terbaru-kondisi-pemain.jpg" alt="Everton vs Bournemouth" class="match-image">
+            </section>
+            <section class="prediction-analysis">
+                <h2>Phân tích và dự đoán</h2>
+                <h3>Phong độ gần đây</h3>
+                <p><strong>Everton:</strong> Everton chơi phòng ngự chắc chắn dưới Sean Dyche, thắng 2/3 trận knock-out tại FA Cup. Dominic Calvert-Lewin và Jordan Pickford là trụ cột, nhưng thiếu hỏa lực tấn công.</p>
+                <p><strong>Bournemouth:</strong> Bournemouth có lối chơi phản công, thắng 2/4 trận knock-out. Dominic Solanke dẫn dắt hàng công, nhưng yếu trên sân khách trước các đội phòng ngự.</p>
+                <h3>Lịch sử đối đầu</h3>
+                <p>Everton nhỉnh hơn:</p>
+                <ul>
+                    <li>Premier League 2024/25: Everton thắng 1-0 (nhà), hòa 1-1 (khách).</li>
+                    <li>Cúp Liên đoàn 2022/23: Bournemouth thắng 2-0 (nhà).</li>
+                </ul>
+                <h3>Đội hình dự kiến</h3>
+                <p><strong>Everton (4-4-2):</strong> Jordan Pickford; Ashley Young, James Tarkowski, Jarrad Branthwaite, Vitaliy Mykolenko; Jack Harrison, Idrissa Gueye, Abdoulaye Doucouré, Dwight McNeil; Dominic Calvert-Lewin, Beto.</p>
+                <p><strong>Bournemouth (4-2-3-1):</strong> Kepa Arrizabalaga; Adam Smith, Illia Zabarnyi, Marcos Senesi, Milos Kerkez; Lewis Cook, Ryan Christie; Antoine Semenyo, Justin Kluivert, Marcus Tavernier; Dominic Solanke.</p>
+                <h3>Cầu thủ đáng chú ý</h3>
+                <p><strong>Everton - Jordan Pickford:</strong> Thủ môn Anh với phản xạ xuất sắc, có thể cứu thua trong các tình huống nguy hiểm.</p>
+                <p><strong>Bournemouth - Dominic Solanke:</strong> Tiền đạo Anh ghi 7 bàn mùa này, là mối nguy hiểm trong vòng cấm.</p>
+                <h3>Yếu tố chiến thuật</h3>
+                <p><strong>Everton:</strong> Sơ đồ 4-4-2 với phòng ngự số đông và phản công qua Calvert-Lewin. Branthwaite sẽ khóa chặt Solanke.</p>
+                <p><strong>Bournemouth:</strong> Sơ đồ 4-2-3-1 với tấn công nhanh qua Semenyo-Kluivert. Solanke sẽ tìm kiếm cơ hội từ các tình huống cố định.</p>
+                <h3>Lý do dự đoán</h3>
+                <p>Everton được dự đoán thắng 1-0 vì:</p>
+                <ul>
+                    <li>Lợi thế sân nhà và hàng thủ chắc chắn tại Goodison Park (thắng 4/6 trận mùa này).</li>
+                    <li>Lịch sử đối đầu nhỉnh hơn, thắng 2/3 trận tại Goodison Park.</li>
+                    <li>Bournemouth có Solanke nguy hiểm, nhưng yếu trên sân khách trước các đội phòng ngự.</li>
+                </ul>
+            </section>
+            <section class="related-articles">
+                <h2>Bài viết liên quan</h2>
+                <ul>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='brighton-aston-villa-2025') }}">Brighton đối đầu Aston Villa tại vòng 5 FA Cup</a></li>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='man-united-crystal-palace-2025') }}">Manchester United chạm trán Crystal Palace tại bán kết FA Cup</a></li>
+                </ul>
+            </section>
+        </main>
+        <footer>
+            <a href="{{ url_for('news.news') }}">Quay lại Trang Chủ</a>
+        </footer>
+    </div>
+</body>
+</html>

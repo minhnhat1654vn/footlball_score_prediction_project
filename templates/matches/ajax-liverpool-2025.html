@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán Ajax vs Liverpool - Champions League 2025/26</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="match-container">
+        <header>
+            <h1>Ajax đối đầu Liverpool tại Amsterdam</h1>
+            <p class="timestamp">Cập nhật: 10:12 PM, 11/05/2025</p>
+        </header>
+        <main>
+            <section class="match-overview">
+                <h2>Dự đoán trận đấu</h2>
+                <p><strong>Ngày:</strong> 17/09/2025, 8:00 PM (giờ địa phương)</p>
+                <p><strong>Địa điểm:</strong> Johan Cruijff Arena, Amsterdam, Hà Lan</p>
+                <p><strong>Dự đoán tỷ số:</strong> Ajax 1-3 Liverpool</p>
+                <img src="https://i.dailymail.co.uk/1s/2024/01/24/17/80419533-13002013-Ajax_s_Under_18s_side_pummelled_Liverpool_s_U18s_10_0_in_a_frien-a-21_1706116254035.jpg" alt="Ajax vs Liverpool" class="match-image">
+            </section>
+            <section class="prediction-analysis">
+                <h2>Phân tích và dự đoán</h2>
+                <h3>Phong độ gần đây</h3>
+                <p><strong>Ajax:</strong> Ajax thống trị Eredivisie với lối chơi tấn công tổng lực. Steven Bergwijn và Brian Brobbey dẫn dắt hàng công, nhưng hàng thủ thường xuyên mắc sai lầm trước các đội mạnh.</p>
+                <p><strong>Liverpool:</strong> Liverpool đứng đầu giai đoạn vòng bảng Champions League 2024/25 với 6 thắng, 0 thua. Mohamed Salah và Darwin Núñez là mũi nhọn, với Arne Slot duy trì lối chơi pressing tầm cao.</p>
+                <h3>Lịch sử đối đầu</h3>
+                <p>Liverpool áp đảo:</p>
+                <ul>
+                    <li>Vòng bảng Champions League 2022/23: Liverpool thắng 3-0 (Amsterdam), 2-1 (Anfield).</li>
+                    <li>Vòng bảng Champions League 2020/21: Liverpool thắng 1-0 (nhà), 1-0 (khách).</li>
+                </ul>
+                <h3>Đội hình dự kiến</h3>
+                <p><strong>Ajax (4-3-3):</strong> Remko Pasveer; Devyne Rensch, Ahmetcan Kaplan, Jorrel Hato, Owen Wijndal; Kenneth Taylor, Jordan Henderson, Branco van den Boomen; Steven Bergwijn, Brian Brobbey, Dusan Tadić.</p>
+                <p><strong>Liverpool (4-3-3):</strong> Caoimhin Kelleher; Trent Alexander-Arnold, Ibrahima Konaté, Virgil van Dijk, Andrew Robertson; Dominik Szoboszlai, Ryan Gravenberch, Alexis Mac Allister; Mohamed Salah, Darwin Núñez, Luis Díaz.</p>
+                <h3>Cầu thủ đáng chú ý</h3>
+                <p><strong>Ajax - Steven Bergwijn:</strong> Tiền đạo Hà Lan với tốc độ và khả năng dứt điểm, là mối nguy hiểm từ cánh.</p>
+                <p><strong>Liverpool - Mohamed Salah:</strong> Tiền đạo Ai Cập ghi 8 bàn tại Champions League 2024/25, là linh hồn của hàng công.</p>
+                <h3>Yếu tố chiến thuật</h3>
+                <p><strong>Ajax:</strong> Sơ đồ 4-3-3 với tấn công tổng lực qua Bergwijn-Brobbey. Hàng thủ yếu dễ bị Salah-Díaz khai thác.</p>
+                <p><strong>Liverpool:</strong> Sơ đồ 4-3-3 với pressing tầm cao và tấn công cánh qua Salah-Díaz. Van Dijk-Konaté sẽ khóa chặt Brobbey.</p>
+                <h3>Lý do dự đoán</h3>
+                <p>Liverpool được dự đoán thắng 3-1 vì:</p>
+                <ul>
+                    <li>Lịch sử đối đầu áp đảo (thắng cả 4 trận gần nhất).</li>
+                    <li>Phong độ vượt trội tại Champions League và lối chơi pressing hiệu quả.</li>
+                    <li>Ajax có lối chơi tấn công hấp dẫn, nhưng hàng thủ yếu khó chống lại sức mạnh của Liverpool.</li>
+                </ul>
+            </section>
+            <section class="related-articles">
+                <h2>Bài viết liên quan</h2>
+                <ul>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='inter-milan-man-united-2025') }}">Inter Milan đối đầu Manchester United tại Giuseppe Meazza</a></li>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='tottenham-bayern-2025') }}">Tottenham đối đầu Bayern Munich tại London</a></li>
+                </ul>
+            </section>
+        </main>
+        <footer>
+            <a href="{{ url_for('news.news') }}">Quay lại Trang Chủ</a>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

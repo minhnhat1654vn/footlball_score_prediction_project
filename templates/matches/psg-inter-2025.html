@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán PSG vs Inter Milan - Chung kết Champions League 2025</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="match-container">
+        <header>
+            <h1>PSG đối đầu Inter Milan trong trận chung kết đỉnh cao</h1>
+            <p class="timestamp">Cập nhật: 06:44 AM, 10/05/2025</p>
+        </header>
+        <main>
+            <section class="match-overview">
+                <h2>Dự đoán trận đấu</h2>
+                <p><strong>Ngày:</strong> 31/05/2025, 8:00 PM (giờ địa phương)</p>
+                <p><strong>Địa điểm:</strong> Allianz Arena, Munich, Germany</p>
+                <p><strong>Dự đoán tỷ số:</strong> PSG 2-1 Inter Milan</p>
+                <img src="https://cdn-img.thethao247.vn/origin_640x0/storage/files/ctvqt/2025/05/08/psg-2-082008avatar.jpg" alt="PSG vs Inter Milan" class="match-image">
+            </section>
+            <section class="prediction-analysis">
+                <h2>Phân tích và dự đoán</h2>
+                <h3>Phong độ gần đây</h3>
+                <p><strong>PSG:</strong> Dưới sự dẫn dắt của HLV Luis Enrique, PSG đã vô địch Ligue 1 sớm và lọt vào chung kết Cúp Quốc gia Pháp. Họ đánh bại 4 đội Anh (Manchester City, Liverpool, Aston Villa, Arsenal) ở Champions League, ghi 17 bàn trong 6 trận knock-out, cho thấy hàng công cực mạnh dù không còn Mbappé.</p>
+                <p><strong>Inter Milan:</strong> Inter, do HLV Simone Inzaghi dẫn dắt, loại Bayern Munich và Barcelona ở vòng knock-out, giữ sạch lưới 7/14 trận Champions League mùa này. Hàng thủ vững chắc với Yann Sommer và Francesco Acerbi, nhưng hàng công phụ thuộc vào Lautaro Martinez và Marcus Thuram.</p>
+                <h3>Lịch sử đối đầu</h3>
+                <p>PSG nhỉnh hơn trong 5 trận gần đây:</p>
+                <ul>
+                    <li>PSG thắng 3, Inter thắng 1, hòa 1 (tổng bàn: PSG 7, Inter 4).</li>
+                    <li>Tỷ lệ bàn thắng: 40% (PSG), 60% (Inter).</li>
+                </ul>
+                <h3>Đội hình dự kiến</h3>
+                <p><strong>PSG (4-3-3):</strong> Gianluigi Donnarumma; Achraf Hakimi, Marquinhos, Lucas Hernandez, Nuno Mendes; Fabián Ruiz, Vitinha, Warren Zaïre-Emery; Ousmane Dembélé, Gonçalo Ramos, Khvicha Kvaratskhelia.</p>
+                <p><strong>Inter Milan (3-5-2):</strong> Yann Sommer; Benjamin Pavard, Francesco Acerbi, Alessandro Bastoni; Denzel Dumfries, Nicolò Barella, Hakan Çalhanoğlu, Henrikh Mkhitaryan, Federico Dimarco; Lautaro Martinez, Marcus Thuram.</p>
+                <h3>Cầu thủ đáng chú ý</h3>
+                <p><strong>PSG - Ousmane Dembélé:</strong> Cầu thủ chạy cánh có tốc độ và khả năng tạo đột biến, từng ghi bàn vào lưới Arsenal ở bán kết.</p>
+                <p><strong>Inter Milan - Lautaro Martinez:</strong> Tiền đạo đội trưởng là mũi nhọn chính, với khả năng dứt điểm và pressing mạnh mẽ.</p>
+                <h3>Yếu tố chiến thuật</h3>
+                <p><strong>PSG:</strong> Sơ đồ 4-3-3 với hàng tiền vệ cơ động (Vitinha, Zaïre-Emery) và cánh mạnh (Dembélé, Kvaratskhelia). PSG sẽ tấn công áp đảo, tận dụng tốc độ để xuyên thủng hàng thủ Inter.</p>
+                <p><strong>Inter Milan:</strong> Sơ đồ 3-5-2 tập trung vào phòng ngự chắc chắn và phản công nhanh qua Dumfries và Dimarco. Inter sẽ nhường thế trận để tìm cơ hội từ sai lầm của PSG.</p>
+                <h3>Lý do dự đoán</h3>
+                <p>PSG được dự đoán thắng 2-1 vì:</p>
+                <ul>
+                    <li>Phong độ vượt trội ở Champions League, đánh bại các đội Anh mạnh.</li>
+                    <li>Hàng công đa dạng với Dembélé, Kvaratskhelia, và Ramos, có thể phá vỡ hàng thủ Inter.</li>
+                    <li>Inter có hàng thủ tốt nhưng thiếu sự ổn định ở hàng công, đặc biệt nếu Martinez không tỏa sáng.</li>
+                </ul>
+            </section>
+            <section class="related-articles">
+                <h2>Bài viết liên quan</h2>
+                <ul>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='arsenal-benfica-2025') }}">Arsenal chạm trán Benfica ở vòng bảng</a></li>
+                    <li><a href="{{ url_for('matches.match_detail', match_id='spain-france-2025') }}">Spain đối đầu France trong trận giao hữu</a></li>
+                </ul>
+            </section>
+        </main>
+        <footer>
+            <a href="{{ url_for('news.news') }}">Quay lại Trang Chủ</a>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

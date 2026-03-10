@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Thi Đấu Bóng Đá</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+            <h1 id="category-title">Euro/Copa America</h1>
+        </header>
+    <div class="container" style="display: flex;">
+        <aside class="sidebar-nav">
+        <nav>
+                <a href="{{ url_for('news.news', category='friendly') }}" data-category="friendly">Euro/Copa America</a>
+                <a href="{{ url_for('news.news', category='uefa') }}" data-category="uefa">UEFA Champions League</a>
+                <a href="{{ url_for('news.news', category='premier') }}" data-category="premier">Premier League</a>
+                <a href="{{ url_for('news.news', category='fa') }}" data-category="fa">FA Cup</a>
+        </nav>
+        </aside>
+        <div class="content">
+            <div class="main-content">
+                <div id="schedule-content">
+                </div>
+            </div>
+            <div class="sidebar">
+                <aside class="sidebar">
+                    <h2>ĐÁNG XEM</h2>
+                    <div class="sidebar-item">
+                    </div>
+                    <div class="article"onclick="window.location.href='psg-inter-2025.html'">
+                        <img src="https://cdn.bongdaplus.vn/Assets/Media/2025/05/10/42/chungket.jpg" alt="PSG vs Inter Milan">
+                        <a>PSG vs Inter Milan</a>
+                    </div>
+                    <div class="article"onclick="window.location.href='manutd-tottenham-2025.html'">
+                        <img src="https://cdn-img.thethao247.vn/origin_640x0/storage/files/member-storage/2025/05/09/mu-vs-tot-681d5011dfe6d.jpg" alt="Manchester United vs Tottenham">
+                        <a>Manchester United vs Tottenham</a>
+                    </div>
+                    <div class="article"onclick="window.location.href='spain-france-2025.html'">
+                        <img src="https://thethaovanhoa.mediacdn.vn/372676912336973824/2024/7/6/grwuw1zbmaab7-n-17202576173761901067832.jpg" alt="Spain vs France">
+                        <a>Spain vs France</a>
+                    </div>
+                    <div class="article"onclick="window.location.href='usa-mexico-2025.html'">
+                        <img src="https://thethaovanhoa.mediacdn.vn/Upload/agUdzah0nJmdL3rsYfrpw/files/2021/08/MYvsMEXICO.jpg" alt="USA vs Mexico">
+                        <a>USA vs Mexico</a>
+                    </div>
+                    <div class="article"onclick="window.location.href='japan-southkorea-2025.html'">
+                        <img src="https://cdn.bongdaplus.vn/Assets/Media/2023/07/01/36/U17%20Nhat%20vs%20%20U17%20Han%20Quoc.jpg" alt="Hungary vs Sweden">
+                        <a>Japan vs Southkorea</a>
+                    </div>
+                    <div class="article"onclick="window.location.href='brazil-argentina-2025.html'">
+                        <img src="https://cdnmedia.webthethao.vn/uploads/2025-03-25/argentina-brazil.jpg" alt="Brazil vs Argentina">
+                        <a>Brazil vs Argentina</a>
+                    </div>
+                    <div class="article"onclick="window.location.href='england-senegal-2025.html'">
+                        <img src="https://kick442.com/wp-content/uploads/2022/12/71528cdb0188f517c61f065b8f286fdb.jpg" alt="England vs Senegal">
+                        <a>England vs Senegal</a>
+                    </div>
+                    <div class="article"onclick="window.location.href='portugal-belgium-2025.html'">
+                        <img src="https://the18.com/sites/default/files/feature-images/20210624-The18-Image-Belgium-vs-Portugal.png" alt="Portugal vs Belgium">
+                        <a>Portugal vs Belgium</a>
+                    </div>
+                    <div class="article"onclick="window.location.href='argentina-colombia-2025.html'">
+                        <img src="https://cdnmedia.webthethao.vn/uploads/2024-07-11/doi-dau-argentina-colombia.jpg" alt="Argentina vs Colombia">
+                        <a>Argentina vs Colombia</a>
+                    </div>
+
+                    <div class="sidebar-item">
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+    <script>
+      const matchUrls = {
+        "brazil-argentina-2025": "{{ url_for('matches.match_detail', match_id='brazil-argentina-2025') }}",
+        "usa-mexico-2025": "{{ url_for('matches.match_detail', match_id='usa-mexico-2025') }}",
+        "france-italy-2025": "{{ url_for('matches.match_detail', match_id='france-italy-2025') }}",
+        "germany-netherlands-2025": "{{ url_for('matches.match_detail', match_id='germany-netherlands-2025') }}",
+        "england-senegal-2025": "{{ url_for('matches.match_detail', match_id='england-senegal-2025') }}",
+        "spain-france-2025": "{{ url_for('matches.match_detail', match_id='spain-france-2025') }}",
+        "hungary-sweden-2025": "{{ url_for('matches.match_detail', match_id='hungary-sweden-2025') }}",
+        "portugal-belgium-2025": "{{ url_for('matches.match_detail', match_id='portugal-belgium-2025') }}",
+        "japan-southkorea-2025": "{{ url_for('matches.match_detail', match_id='japan-southkorea-2025') }}",
+        "argentina-colombia-2025": "{{ url_for('matches.match_detail', match_id='argentina-colombia-2025') }}",
+        "psg-inter-2025": "{{ url_for('matches.match_detail', match_id='psg-inter-2025') }}",
+        "manchester-city-ajax-2025": "{{ url_for('matches.match_detail', match_id='manchester-city-ajax-2025') }}",
+        "arsenal-benfica-2025": "{{ url_for('matches.match_detail', match_id='arsenal-benfica-2025') }}",
+        "liverpool-sporting-2025": "{{ url_for('matches.match_detail', match_id='liverpool-sporting-2025') }}",
+        "galatasaray-barcelona-2025": "{{ url_for('matches.match_detail', match_id='galatasaray-barcelona-2025') }}",
+        "fenerbahce-psg-2025": "{{ url_for('matches.match_detail', match_id='fenerbahce-psg-2025') }}",
+        "inter-milan-man-united-2025": "{{ url_for('matches.match_detail', match_id='inter-milan-man-united-2025') }}",
+        "tottenham-bayern-2025": "{{ url_for('matches.match_detail', match_id='tottenham-bayern-2025') }}",
+        "chelsea-real-madrid-2025": "{{ url_for('matches.match_detail', match_id='chelsea-real-madrid-2025') }}",
+        "ajax-liverpool-2025": "{{ url_for('matches.match_detail', match_id='ajax-liverpool-2025') }}",
+        "arsenal-bournemouth-2025": "{{ url_for('matches.match_detail', match_id='arsenal-bournemouth-2025') }}",
+        "liverpool-tottenham-2025": "{{ url_for('matches.match_detail', match_id='liverpool-tottenham-2025') }}",
+        "manchester-city-west-ham-2025": "{{ url_for('matches.match_detail', match_id='manchester-city-west-ham-2025') }}",
+        "chelsea-newcastle-2025": "{{ url_for('matches.match_detail', match_id='chelsea-newcastle-2025') }}",
+        "man-united-everton-2025": "{{ url_for('matches.match_detail', match_id='man-united-everton-2025') }}",
+        "fulham-liverpool-2025": "{{ url_for('matches.match_detail', match_id='fulham-liverpool-2025') }}",
+        "tottenham-crystal-palace-2025": "{{ url_for('matches.match_detail', match_id='tottenham-crystal-palace-2025') }}",
+        "west-ham-arsenal-2025": "{{ url_for('matches.match_detail', match_id='west-ham-arsenal-2025') }}",
+        "newcastle-man-city-2025": "{{ url_for('matches.match_detail', match_id='newcastle-man-city-2025') }}",
+        "everton-chelsea-2025": "{{ url_for('matches.match_detail', match_id='everton-chelsea-2025') }}",
+        "arsenal-liverpool-2025": "{{ url_for('matches.match_detail', match_id='arsenal-liverpool-2025') }}",
+        "man-city-crystal-palace-2025": "{{ url_for('matches.match_detail', match_id='man-city-crystal-palace-2025') }}",
+        "liverpool-tottenham-fa-2025": "{{ url_for('matches.match_detail', match_id='liverpool-tottenham-fa-2025') }}",
+        "chelsea-newcastle-fa-2025": "{{ url_for('matches.match_detail', match_id='chelsea-newcastle-fa-2025') }}",
+        "man-united-fulham-2025": "{{ url_for('matches.match_detail', match_id='man-united-fulham-2025') }}",
+        "arsenal-west-ham-2025": "{{ url_for('matches.match_detail', match_id='arsenal-west-ham-2025') }}",
+        "liverpool-chelsea-fa-2025": "{{ url_for('matches.match_detail', match_id='liverpool-chelsea-fa-2025') }}",
+        "man-united-crystal-palace-2025": "{{ url_for('matches.match_detail', match_id='man-united-crystal-palace-2025') }}",
+        "brighton-aston-villa-2025": "{{ url_for('matches.match_detail', match_id='brighton-aston-villa-2025') }}",
+        "everton-bournemouth-2025": "{{ url_for('matches.match_detail', match_id='everton-bournemouth-2025') }}",
+        "sheffield-leeds-2025": "{{ url_for('matches.match_detail', match_id='sheffield-leeds-2025') }}",
+        "nottingham-crystal-palace-2025": "{{ url_for('matches.match_detail', match_id='nottingham-crystal-palace-2025') }}"
+      };
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
