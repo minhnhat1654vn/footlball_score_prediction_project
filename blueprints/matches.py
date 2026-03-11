@@ -3,7 +3,7 @@ Matches Blueprint - Danh sách trận đấu, fixtures, chi tiết trận.
 """
 import json
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from flask import Blueprint, request, jsonify, render_template
@@ -110,8 +110,11 @@ def get_fixtures():
                     ts = event.get("startTimestamp", 0) or 0
                     if not ts:
                         continue
-                    event_date = datetime.fromtimestamp(ts, APP_TZ).strftime("%Y-%m-%d")
-                    if event_date != date:
+                    # Sofascore startTimestamp là UTC-based. Nếu chỉ dùng APP_TZ (VN) sẽ
+                    # dễ miss các trận đá buổi tối châu Âu (UTC date khác VN date).
+                    event_date_local = datetime.fromtimestamp(ts, APP_TZ).date()
+                    event_date_utc = datetime.fromtimestamp(ts, timezone.utc).date()
+                    if event_date_local != target_date and event_date_utc != target_date:
                         continue
                     home_team = event.get("homeTeam", {})
                     away_team = event.get("awayTeam", {})
