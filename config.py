@@ -32,7 +32,7 @@ APP_TZ = pytz.timezone("Asia/Ho_Chi_Minh")
 FLASK_SECRET_KEY = 'football-prediction-secret-key'
 
 # ======================== SOFASCORE API CONFIGURATION ========================
-SOFASCORE_API_KEY = "816496746cmshba1cf88b9beb449p19b27ejsn73bc7088072d"
+SOFASCORE_API_KEY = "bdbf7c1877msh814c8765445b245p14ed14jsn8a47a159d05c"
 SOFASCORE_API_HOST = "sofascore.p.rapidapi.com"
 SOFASCORE_BASE_URL = "https://sofascore.p.rapidapi.com"
 
