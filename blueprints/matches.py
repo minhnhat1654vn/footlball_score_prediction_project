@@ -39,30 +39,64 @@ def get_fixtures():
 
     try:
         target_date = datetime.strptime(date, "%Y-%m-%d").date()
-        # Số trang cố định vừa phải để tránh vượt rate limit nhưng vẫn quét được nhiều ngày
-        max_pages = 10
-
-        # Khoảng thời gian (timestamp) trong ngày để lọc chuẩn theo Sofascore
-        day_start_ts = datetime(target_date.year, target_date.month, target_date.day, 0, 0, tzinfo=APP_TZ).timestamp()
-        day_end_ts = datetime(target_date.year, target_date.month, target_date.day, 23, 59, 59, tzinfo=APP_TZ).timestamp()
+        today = datetime.now(APP_TZ).date()
+        delta_days = abs((target_date - today).days)
+        is_future = target_date > today
+        is_today = target_date == today
+        max_pages = min(15, max(3, 3 + delta_days))
 
         def fetch_league_events(league_id):
             tournament_id = SOFASCORE_TOURNAMENT_IDS.get(league_id, league_id)
             season_id = get_season_id(league_id)
-            # Luôn dùng get-matches (theo mùa) rồi lọc theo ngày mong muốn.
-            # Endpoint này có phân trang bằng pageIndex.
-            endpoint = "/tournaments/get-matches"
-            base_params = {"tournamentId": tournament_id, "seasonId": season_id}
+            # Với "hôm nay": ưu tiên lấy scheduled/upcoming events thay vì last-matches
+            # để tránh kéo quá nhiều trận quá khứ và dễ dính rate limit.
+            if is_today:
+                endpoint = "/tournaments/get-scheduled-events"
+                params = {"tournamentId": tournament_id, "seasonId": season_id}
+            elif is_future:
+                endpoint = "/tournaments/get-next-matches"
+                params = {"tournamentId": tournament_id, "seasonId": season_id}
+            else:
+                endpoint = "/tournaments/get-last-matches"
+                params = {"tournamentId": tournament_id, "seasonId": season_id}
 
             all_events = []
             for page_index in range(0, max_pages):
-                page_params = {**base_params, "pageIndex": page_index}
+                page_params = {**params, "pageIndex": page_index}
                 data = sofascore_get(endpoint, page_params)
                 if data and "events" in data and data["events"]:
                     page_events = data["events"]
                     all_events.extend(page_events)
+                    found_count = sum(1 for e in page_events
+                                      if e.get("startTimestamp") and
+                                      datetime.fromtimestamp(e.get("startTimestamp", 0), APP_TZ).date() == target_date)
+                    if not page_events or (found_count > 0 and page_index >= 2):
+                        break
                 else:
                     break
+
+            # Fallback: nếu "hôm nay" mà không có data từ scheduled-events, thử next-matches
+            # (một số giải có thể không trả scheduled-events đầy đủ).
+            if is_today and not all_events:
+                fb_endpoint = "/tournaments/get-next-matches"
+                fb_params = {"tournamentId": tournament_id, "seasonId": season_id}
+                for page_index in range(0, min(5, max_pages)):
+                    page_params = {**fb_params, "pageIndex": page_index}
+                    data = sofascore_get(fb_endpoint, page_params)
+                    if data and "events" in data and data["events"]:
+                        page_events = data["events"]
+                        all_events.extend(page_events)
+                        found_count = sum(
+                            1
+                            for e in page_events
+                            if e.get("startTimestamp")
+                            and datetime.fromtimestamp(e.get("startTimestamp", 0), APP_TZ).date()
+                            == target_date
+                        )
+                        if not page_events or (found_count > 0 and page_index >= 1):
+                            break
+                    else:
+                        break
             return league_id, all_events
 
         converted_matches = []
@@ -114,8 +148,7 @@ def get_fixtures():
 
         converted_matches.sort(key=lambda m: m.get("fixture", {}).get("date", ""))
         response_data = {"response": converted_matches}
-        # Chỉ cache nếu thực sự có trận – tránh cache rỗng cho những ngày Sofascore chưa có lịch
-        if converted_matches:
+        if len(converted_matches) > 0 or max_pages >= 10:
             save_to_cache(key, data_type, response_data)
         return jsonify(response_data)
     except Exception as e:
